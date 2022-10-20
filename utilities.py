@@ -1,13 +1,10 @@
 import secrets
 import string
 
-def passwordGenerator():
-    temp = string.ascii_letters + string.punctuation + string.digits
-    length = 24
+def passwordGenerator(pool, length):
     password = ""
 
     while len(password) != length:
-        password += secrets.choice(temp)
+        password += secrets.choice(pool)
 
-    print(password)
     return password
