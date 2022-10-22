@@ -11,10 +11,10 @@ class MainApplication(tk.Frame):
         self.columnconfigure(3, weight=1)
 
         self.servicesFrame = servicesFrame()
-        self.servicesFrame.grid(row=0, column=0, rowspan=3, sticky='nsew', ipadx=20)
+        self.servicesFrame.grid(row=0, column=0, rowspan=3, sticky='nsew', ipadx=80)
         self.itemsFrame = itemsFrame()
-        self.itemsFrame.grid(row=0, column=1, rowspan=3, sticky='nsew')
-        self.detailsFrame = detailsFrame(parent)
+        self.itemsFrame.grid(row=0, column=1, rowspan=3,sticky='nsew')
+        self.detailsFrame = detailsFrame(parent, {'account': 'Reddit', 'username': 'ABCD', 'password': '1234'})
         self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
         self.passwordGenerator = passwordGeneratorFrame(parent)
         self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')

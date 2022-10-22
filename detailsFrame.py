@@ -6,7 +6,7 @@ import utilities
 from datetime import datetime
 
 class detailsFrame(tk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, json):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(7, weight=1)
@@ -16,14 +16,14 @@ class detailsFrame(tk.Frame):
         self.accountLabelText.set("Account:")
         self.accountLabel = tk.Label(self, textvariable=self.accountLabelText)
         self.accountEntryText = tk.StringVar()
-        self.accountEntryText.set("Reddit")
+        self.accountEntryText.set(json['account'])
         self.accountEntry = tk.Entry(self, text=self.accountEntryText, width=60)
 
         self.usernameLabelText = tk.StringVar()
         self.usernameLabelText.set("Username:")
         self.usernameLabel = tk.Label(self, textvariable=self.usernameLabelText)
         self.usernameEntryText = tk.StringVar()
-        self.usernameEntryText.set("ABCD")
+        self.usernameEntryText.set(json['username'])
         self.usernameEntry = tk.Entry(self, text=self.usernameEntryText, width=60)
         self.usernameCopyButton = tk.Button(self, text="Copy")
 
@@ -31,7 +31,7 @@ class detailsFrame(tk.Frame):
         self.passwordLabelText.set("Password:")
         self.passwordLabel = tk.Label(self, textvariable=self.passwordLabelText)
         self.passwordEntryText = tk.StringVar()
-        self.passwordEntryText.set("ABCD")
+        self.passwordEntryText.set(json['password'])
         self.passwordEntry = tk.Entry(self, text=self.passwordEntryText, width=60, show="*")
         self.passwordCopyButton = tk.Button(self, text="Copy", command=self.copyToClipboard)
         self.passwordViewButton = tk.Button(self, text="View", command=self.unhidePassword)
