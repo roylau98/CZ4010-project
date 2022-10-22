@@ -10,6 +10,7 @@ class passwordGeneratorFrame(tk.Frame):
         self.rowconfigure(14, weight=1)
         self.columnconfigure(3, weight=1)
         self.parent = parent
+        tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1, height=360)
 
         self.button = tk.Button(self, text="Generate", command=self.generatePassword)
         self.copy = tk.Button(self, text="Copy", command=self.copyToClipboard)

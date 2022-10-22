@@ -1,4 +1,7 @@
 from passwordGeneratorFrame import passwordGeneratorFrame
+from detailsFrame import detailsFrame
+from servicesFrame import servicesFrame
+from itemsFrame import itemsFrame
 import tkinter as tk
 class MainApplication(tk.Frame):
     def __init__(self, parent):
@@ -6,8 +9,13 @@ class MainApplication(tk.Frame):
         self.parent = parent
         self.rowconfigure(2, weight=1)
         self.columnconfigure(5, weight=1)
+
+        self.servicesFrame = servicesFrame()
+        self.servicesFrame.grid(row=0, column=0, rowspan=2, sticky='nsew')
+        self.detailsFrame = detailsFrame(parent)
+        self.detailsFrame.grid(row=0, column=3, columnspan=2, sticky='nsew')
         self.passwordGenerator = passwordGeneratorFrame(parent)
-        self.passwordGenerator.grid(row=1, column=3, columnspan=2, sticky='ew')
+        self.passwordGenerator.grid(row=1, column=3, columnspan=2, sticky='sew')
 
 if __name__ == "__main__":
     root = tk.Tk()
