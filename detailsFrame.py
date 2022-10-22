@@ -3,12 +3,13 @@ import tkinter as tk
 import string
 import time
 import utilities
+from datetime import datetime
 
 class detailsFrame(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
-        self.rowconfigure(6, weight=1)
+        self.rowconfigure(7, weight=1)
         self.columnconfigure(3, weight=1)
 
         self.accountLabelText = tk.StringVar()
@@ -35,15 +36,21 @@ class detailsFrame(tk.Frame):
         self.passwordCopyButton = tk.Button(self, text="Copy", command=self.copyToClipboard)
         self.passwordViewButton = tk.Button(self, text="View", command=self.unhidePassword)
 
-        self.accountLabel.grid(row=0, column=0, sticky='w')
-        self.accountEntry.grid(row=1, column=0, sticky='w')
-        self.usernameLabel.grid(row=2, column=0, sticky='w')
-        self.usernameEntry.grid(row=3, column=0, sticky='w')
-        self.usernameCopyButton.grid(row=3, column=1, sticky='w')
-        self.passwordLabel.grid(row=4, column=0, sticky='w')
-        self.passwordEntry.grid(row=5, column=0, sticky='w')
-        self.passwordCopyButton.grid(row=5, column=1, sticky='w')
-        self.passwordViewButton.grid(row=5, column=2, sticky='w')
+        self.dateUpdatedText = tk.StringVar()
+        self.now = datetime.now()
+        self.dateUpdatedText.set("Updated: " + self.now.strftime('%d %b %Y, %I:%M %p'))
+        self.dateUpdated = tk.Label(self, textvariable=self.dateUpdatedText)
+
+        self.accountLabel.grid(row=0, column=0, sticky='w', padx=10)
+        self.accountEntry.grid(row=1, column=0, sticky='w', padx=10)
+        self.usernameLabel.grid(row=2, column=0, sticky='w', padx=10)
+        self.usernameEntry.grid(row=3, column=0, sticky='w', padx=10)
+        self.usernameCopyButton.grid(row=3, column=1, sticky='e', padx=5)
+        self.passwordLabel.grid(row=4, column=0, sticky='w', padx=10)
+        self.passwordEntry.grid(row=5, column=0, sticky='w', padx=10)
+        self.passwordCopyButton.grid(row=5, column=1, sticky='e', padx=5)
+        self.passwordViewButton.grid(row=5, column=2, sticky='e', padx=5)
+        self.dateUpdated.grid(row=6, column=0, sticky='w', pady=10, padx=10)
 
     def copyToClipboard(self):
         self.parent.clipboard_clear()

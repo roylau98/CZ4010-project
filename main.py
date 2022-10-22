@@ -7,15 +7,17 @@ class MainApplication(tk.Frame):
     def __init__(self, parent):
         super().__init__()
         self.parent = parent
-        self.rowconfigure(2, weight=1)
-        self.columnconfigure(5, weight=1)
+        self.rowconfigure(3, weight=1)
+        self.columnconfigure(3, weight=1)
 
         self.servicesFrame = servicesFrame()
-        self.servicesFrame.grid(row=0, column=0, rowspan=2, sticky='nsew')
+        self.servicesFrame.grid(row=0, column=0, rowspan=3, sticky='nsew', ipadx=20)
+        self.itemsFrame = itemsFrame()
+        self.itemsFrame.grid(row=0, column=1, rowspan=3, sticky='nsew')
         self.detailsFrame = detailsFrame(parent)
-        self.detailsFrame.grid(row=0, column=3, columnspan=2, sticky='nsew')
+        self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
         self.passwordGenerator = passwordGeneratorFrame(parent)
-        self.passwordGenerator.grid(row=1, column=3, columnspan=2, sticky='sew')
+        self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
 if __name__ == "__main__":
     root = tk.Tk()

@@ -7,21 +7,25 @@ import utilities
 class passwordGeneratorFrame(tk.Frame):
     def __init__(self, parent):
         super().__init__()
-        self.rowconfigure(14, weight=1)
-        self.columnconfigure(3, weight=1)
+        self.rowconfigure(8, weight=1)
+        self.columnconfigure(4, weight=1)
         self.parent = parent
-        tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1, height=360)
+        tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
 
+        self.passwordGeneratorText = tk.StringVar()
+        self.passwordGeneratorText.set("Generator: ")
+        self.passwordGeneratorLabel = tk.Label(self, textvariable=self.passwordGeneratorText)
         self.button = tk.Button(self, text="Generate", command=self.generatePassword)
         self.copy = tk.Button(self, text="Copy", command=self.copyToClipboard)
-        self.output = tk.Text(self, height=1, width=50)
+        self.clear = tk.Button(self, text="Clear", command=self.clearOutput)
+        self.output = tk.Text(self, height=1, width=60)
 
         self.scaleBarLabelText = tk.StringVar()
         self.scaleBarLabelText.set("Length")
         self.scaleBarLabel = tk.Label(self, textvariable=self.scaleBarLabelText)
         self.scaleBarOutput = tk.Text(self, height=1, width=3)
         self.scaleBarOutput.insert("end", "24")
-        self.scaleBar = tk.Scale(self, from_=8, to=50, orient="horizontal", command=self.updateScaleText, showvalue=0)
+        self.scaleBar = tk.Scale(self, from_=8, to=60, orient="horizontal", command=self.updateScaleText, showvalue=0)
         self.scaleBar.set(24)
 
         self.punctuation = tk.IntVar()
@@ -52,21 +56,23 @@ class passwordGeneratorFrame(tk.Frame):
         self.checkBoxL = tk.Checkbutton(self, variable=self.lowercase, command=self.tickCheckBox)
         self.checkBoxL.select()
 
-        self.button.grid(row=0, column=0)
-        self.output.grid(row=0, column=1, columnspan=2, sticky='w')
-        self.copy.grid(row=2, column=0)
-        self.scaleBarLabel.grid(row=4, column=0)
-        self.scaleBarOutput.grid(row=4, column=1)
-        self.scaleBar.grid(row=4, column=2, sticky='ew')
+        self.passwordGeneratorLabel.grid(row=0, column=0, padx=5, pady=5)
+        self.output.grid(row=1, column=1, padx=5, pady=5)
+        self.button.grid(row=1, column=0, padx=5, pady=5)
+        self.copy.grid(row=1, column=2, padx=5, pady=5)
+        self.clear.grid(row=1, column=3, padx=5, pady=5)
+        self.scaleBarLabel.grid(row=3, column=0, padx=5, pady=5)
+        self.scaleBarOutput.grid(row=3, column=2, padx=5)
+        self.scaleBar.grid(row=3, column=1, sticky='ew')
 
-        self.checkBoxLLabel.grid(row=7, column=0)
-        self.checkBoxL.grid(row=7, column=2)
-        self.checkBoxULabel.grid(row=9, column=0)
-        self.checkBoxU.grid(row=9, column=2)
-        self.checkBoxDLabel.grid(row=11, column=0)
-        self.checkBoxD.grid(row=11, column=2)
-        self.checkBoxPLabel.grid(row=13, column=0)
-        self.checkBoxP.grid(row=13, column=2)
+        self.checkBoxLLabel.grid(row=4, column=0)
+        self.checkBoxL.grid(row=4, column=2, padx=5)
+        self.checkBoxULabel.grid(row=5, column=0)
+        self.checkBoxU.grid(row=5, column=2, padx=5)
+        self.checkBoxDLabel.grid(row=6, column=0)
+        self.checkBoxD.grid(row=6, column=2, padx=5)
+        self.checkBoxPLabel.grid(row=7, column=0)
+        self.checkBoxP.grid(row=7, column=2, padx=5)
 
     def generatePassword(self):
         pool = ""
@@ -82,6 +88,9 @@ class passwordGeneratorFrame(tk.Frame):
         password = utilities.passwordGenerator(pool, self.scaleBar.get())
         self.output.delete(1.0, "end")
         self.output.insert("end", password)
+
+        background = threading.Thread(target=self.clearOutputBackground, daemon=True)
+        background.start()
         return password
 
     def updateScaleText(self, val):
@@ -96,7 +105,7 @@ class passwordGeneratorFrame(tk.Frame):
 
     def copyToClipboard(self):
         self.parent.clipboard_clear()
-        self.parent.clipboard_append(self.output.get("1.0", "end"))
+        self.parent.clipboard_append(self.output.get("1.0", "end")[:-1])
         background = threading.Thread(target=self.clearClipboard, daemon=True)
         background.start()
 
@@ -105,3 +114,11 @@ class passwordGeneratorFrame(tk.Frame):
         print("Cleared clipboard")
         self.parent.clipboard_clear()
         self.parent.clipboard_append('')
+
+    def clearOutputBackground(self):
+        time.sleep(10)
+        print("Cleared output")
+        self.output.delete(1.0, "end")
+
+    def clearOutput(self):
+        self.output.delete(1.0, "end")
