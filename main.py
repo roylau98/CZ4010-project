@@ -4,7 +4,7 @@ from notesDetailsFrame import notesDetailsFrame
 from defaultDetailsFrame import defaultDetailsFrame
 from vaultDetailsFrame import vaultDetailsFrame
 from servicesFrame import servicesFrame
-from loginItemsFrame import loginItemsFrame
+from itemsFrame import itemsFrame
 import tkinter as tk
 import json
 
@@ -21,21 +21,15 @@ class MainApplication(tk.Frame):
         self.rowconfigure(3, weight=1)
         self.columnconfigure(3, weight=1)
 
-        self.servicesFrame = servicesFrame(parent)
+        self.servicesFrame = servicesFrame(parent, self, self.items)
         self.servicesFrame.grid(row=0, column=0, rowspan=3, sticky='nsew')
-        self.itemsFrame = loginItemsFrame(parent, self, self.credentials)
+
+        self.itemsFrame = itemsFrame(parent, self, self.credentials)
         self.itemsFrame.grid(row=0, column=1, rowspan=3,sticky='nsew')
-        #self.detailsFrame = passwordDetailsFrame(parent, self, self.credentials[list(self.credentials)[0]])
-        #self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
 
-        #self.detailsFrame = notesDetailsFrame(parent, self, self.notes[list(self.notes)[0]])
-        #self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
-
-        # self.detailsFrame = defaultDetailsFrame(parent)
-        # self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
-
-        self.detailsFrame = vaultDetailsFrame(parent, self, self.vault[list(self.vault)[0]])
+        self.detailsFrame = defaultDetailsFrame(parent)
         self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
+
         self.passwordGenerator = passwordGeneratorFrame(parent)
         self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
@@ -50,7 +44,12 @@ class MainApplication(tk.Frame):
 
     def changeDetailsFrame(self, key):
         self.detailsFrame.destroy()
-        self.detailsFrame = passwordDetailsFrame(self.parent, self, self.credentials[key])
+        if key in self.credentials:
+            self.detailsFrame = passwordDetailsFrame(self.parent, self, self.credentials[key])
+        elif key in self.vault:
+            self.detailsFrame = vaultDetailsFrame(self.parent, self, self.vault[key])
+        else:
+            self.detailsFrame = notesDetailsFrame(self.parent, self, self.notes[key])
         self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
 
         self.passwordGenerator.destroy()
@@ -59,7 +58,7 @@ class MainApplication(tk.Frame):
 
     def changeItemsFrame(self, key):
         self.itemsFrame.destroy()
-        self.itemsFrame = loginItemsFrame(parent, self, self.credentials)
+        self.itemsFrame = itemsFrame(self.parent, self, self.items[key])
         self.itemsFrame.grid(row=0, column=1, rowspan=3,sticky='nsew')
 
 if __name__ == "__main__":

@@ -27,7 +27,7 @@ class passwordDetailsFrame(tk.Frame):
         self.usernameEntryText = tk.StringVar()
         self.usernameEntryText.set(self.json['username'])
         self.usernameEntry = tk.Entry(self, text=self.usernameEntryText, width=60)
-        self.usernameCopyButton = tk.Button(self, text="Copy")
+        self.usernameCopyButton = tk.Button(self, text="Copy", command=self.copyUsernameToClipboard)
 
         self.passwordLabelText = tk.StringVar()
         self.passwordLabelText.set("Password:")
@@ -53,6 +53,10 @@ class passwordDetailsFrame(tk.Frame):
         self.passwordCopyButton.grid(row=5, column=1, sticky='e', padx=5)
         self.passwordViewButton.grid(row=5, column=2, sticky='e', padx=5)
         self.dateUpdated.grid(row=6, column=0, sticky='w', pady=10, padx=10)
+
+    def copyUsernameToClipboard(self):
+        self.parent.clipboard_clear()
+        self.parent.clipboard_append(self.usernameEntryText.get())
 
     def copyToClipboard(self):
         self.parent.clipboard_clear()
