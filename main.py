@@ -8,13 +8,14 @@ import json
 class MainApplication(tk.Frame):
     def __init__(self, parent):
         super().__init__()
+
         with open('login.json', 'r') as f:
             self.credentials = json.load(f)
 
-        with open('login.json', 'r') as f:
+        with open('vault.json', 'r') as f:
             self.vault = json.load(f)
 
-        with open('login.json', 'r') as f:
+        with open('notes.json', 'r') as f:
             self.notes = json.load(f)
 
         self.parent = parent
