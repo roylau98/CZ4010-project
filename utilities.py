@@ -1,6 +1,7 @@
 import secrets
 import string
 import os
+import json
 
 def passwordGenerator(pool, length):
     password = ""
@@ -37,3 +38,20 @@ def deleteItem(path, filename):
         os.remove(path+"/"+filename)
     except OSError as e:
         print("Note does not exists.")
+
+def deleteFromJson(deleted, type):
+    with open('items.json', 'r') as f:
+        allItems = json.load(f)
+
+    typeItems = allItems[type]
+    for key, value in typeItems.items():
+        if value['account'] == deleted['account'] and value['username'] == deleted['username'] and value['password'] == deleted['password']:
+            break
+
+    del typeItems[key]
+    allItems[type] = typeItems
+
+    with open('items.json', 'w', encoding='utf-8') as f:
+        json.dump(allItems, f, ensure_ascii=False, indent=4)
+
+    return key

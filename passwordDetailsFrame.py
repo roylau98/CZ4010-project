@@ -6,13 +6,14 @@ import utilities
 from datetime import datetime
 
 class passwordDetailsFrame(tk.Frame):
-    def __init__(self, parent, main, json):
+    def __init__(self, parent, main, json, itemFrame):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.json = json
         self.parent = parent
-        self.rowconfigure(7, weight=1)
+        self.rowconfigure(8, weight=1)
         self.columnconfigure(3, weight=1)
         self.main = main
+        self.itemFrame = itemFrame
 
         self.accountLabelText = tk.StringVar()
         self.accountLabelText.set("Account:")
@@ -43,6 +44,9 @@ class passwordDetailsFrame(tk.Frame):
         self.dateUpdatedText.set("Updated: " + self.json['updated'])
         self.dateUpdated = tk.Label(self, textvariable=self.dateUpdatedText)
 
+        self.editButton = tk.Button(self, text="Edit", command=self.editLogin)
+        self.deleteButton = tk.Button(self, text="Delete", command=self.deleteLogin)
+
         self.accountLabel.grid(row=0, column=0, sticky='w', padx=10)
         self.accountEntry.grid(row=1, column=0, sticky='w', padx=10)
         self.usernameLabel.grid(row=2, column=0, sticky='w', padx=10)
@@ -52,7 +56,18 @@ class passwordDetailsFrame(tk.Frame):
         self.passwordEntry.grid(row=5, column=0, sticky='w', padx=10)
         self.passwordCopyButton.grid(row=5, column=1, sticky='e', padx=5)
         self.passwordViewButton.grid(row=5, column=2, sticky='e', padx=5)
-        self.dateUpdated.grid(row=6, column=0, sticky='w', pady=10, padx=10)
+        self.editButton.grid(row=6, column=0, sticky='w', padx=10, pady=5)
+        self.deleteButton.grid(row=6, column=1, sticky='e', padx=5, pady=5)
+        self.dateUpdated.grid(row=7, column=0, sticky='w', pady=10, padx=10)
+
+    def editLogin(self):
+        pass
+
+    def deleteLogin(self):
+        self.main.displayDefaultFrame()
+        self.itemFrame.deleteButton(self.json['account'] + "\n" + self.json['username'])
+        key = utilities.deleteFromJson(self.json, "login")
+        self.main.updateItems(key, "login")
 
     def copyUsernameToClipboard(self):
         self.parent.clipboard_clear()
@@ -66,7 +81,6 @@ class passwordDetailsFrame(tk.Frame):
 
     def clearClipboard(self):
         time.sleep(10)
-        print("Cleared clipboard")
         self.parent.clipboard_clear()
         self.parent.clipboard_append('')
 
@@ -77,5 +91,4 @@ class passwordDetailsFrame(tk.Frame):
 
     def hidePassword(self):
         time.sleep(10)
-        print("Hidden password")
         self.passwordEntry.config(show="*")

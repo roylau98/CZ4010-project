@@ -33,6 +33,13 @@ class MainApplication(tk.Frame):
         self.passwordGenerator = passwordGeneratorFrame(parent)
         self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
+    def updateItems(self, key, type):
+        if type == "login":
+            del self.credentials[key]
+        elif type == "vault":
+            del self.vault[key]
+        else:
+            del self.notes[key]
     def displayDefaultFrame(self):
         self.detailsFrame.destroy()
         self.detailsFrame = defaultDetailsFrame(self.parent)
@@ -45,7 +52,7 @@ class MainApplication(tk.Frame):
     def changeDetailsFrame(self, key):
         self.detailsFrame.destroy()
         if key in self.credentials:
-            self.detailsFrame = passwordDetailsFrame(self.parent, self, self.credentials[key])
+            self.detailsFrame = passwordDetailsFrame(self.parent, self, self.credentials[key], self.itemsFrame)
         elif key in self.vault:
             self.detailsFrame = vaultDetailsFrame(self.parent, self, self.vault[key])
         else:

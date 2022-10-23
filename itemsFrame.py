@@ -10,12 +10,19 @@ class itemsFrame(tk.Frame):
         i = 0
         for key in items:
             if "account" in items[key]:
-                self.button.append(tk.Button(self, text=items[key]['account'], command=lambda key=key: self.changeDetails(key)))
+                self.button.append(tk.Button(self, text=items[key]['account'] + "\n" + items[key]['username'], command=lambda key=key: self.changeDetails(key), anchor='w'))
             elif "title" in items[key]:
                 self.button.append(
-                    tk.Button(self, text=items[key]['title'], command=lambda key=key: self.changeDetails(key)))
+                    tk.Button(self, text=items[key]['title'], command=lambda key=key: self.changeDetails(key), anchor='w'))
             self.button[i].grid(row=i+1, column=0, sticky='nsew', ipadx=178)
             i += 1
 
     def changeDetails(self, key):
         self.main.changeDetailsFrame(key)
+
+    def deleteButton(self, key):
+        for i in range(len(self.button)):
+            if self.button[i]['text'] == key:
+                break
+        self.button[i].destroy()
+        del self.button[i]
