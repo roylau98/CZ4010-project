@@ -1,8 +1,8 @@
 from passwordGeneratorFrame import passwordGeneratorFrame
-from passwordDetailsFrame import passwordDetailsFrame
-from notesDetailsFrame import notesDetailsFrame
-from defaultDetailsFrame import defaultDetailsFrame
-from vaultDetailsFrame import vaultDetailsFrame
+from detailsframe.passwordDetailsFrame import passwordDetailsFrame
+from detailsframe.notesDetailsFrame import notesDetailsFrame
+from detailsframe.defaultDetailsFrame import defaultDetailsFrame
+from detailsframe.vaultDetailsFrame import vaultDetailsFrame
 from servicesFrame import servicesFrame
 from itemsFrame import itemsFrame
 import tkinter as tk
@@ -67,6 +67,7 @@ class MainApplication(tk.Frame):
         self.itemsFrame.destroy()
         self.itemsFrame = itemsFrame(self.parent, self, self.items[key])
         self.itemsFrame.grid(row=0, column=1, rowspan=3,sticky='nsew')
+        self.displayDefaultFrame()
 
 if __name__ == "__main__":
     root = tk.Tk()
