@@ -1,5 +1,7 @@
 from passwordGeneratorFrame import passwordGeneratorFrame
 from passwordDetailsFrame import passwordDetailsFrame
+from notesDetailsFrame import notesDetailsFrame
+from defaultDetailsFrame import defaultDetailsFrame
 from servicesFrame import servicesFrame
 from itemsFrame import itemsFrame
 import tkinter as tk
@@ -26,14 +28,20 @@ class MainApplication(tk.Frame):
         self.servicesFrame.grid(row=0, column=0, rowspan=3, sticky='nsew')
         self.itemsFrame = itemsFrame(parent, self, self.credentials)
         self.itemsFrame.grid(row=0, column=1, rowspan=3,sticky='nsew')
-        self.detailsFrame = passwordDetailsFrame(parent, self.credentials[list(self.credentials)[0]])
+        #self.detailsFrame = passwordDetailsFrame(parent, self, self.credentials[list(self.credentials)[0]])
+        #self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
+
+        #self.detailsFrame = notesDetailsFrame(parent, self, self.notes[list(self.notes)[0]])
+        #self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
+
+        self.detailsFrame = defaultDetailsFrame(parent)
         self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
         self.passwordGenerator = passwordGeneratorFrame(parent)
         self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
     def changeDetailsFrame(self, key):
         self.detailsFrame.destroy()
-        self.detailsFrame = passwordDetailsFrame(self.parent, self.credentials[key])
+        self.detailsFrame = passwordDetailsFrame(self.parent, self, self.credentials[key])
         self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='new')
 
     def changeItemsFrame(self, key):
