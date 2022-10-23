@@ -3,13 +3,14 @@ import utilities
 
 
 class vaultDetailsFrame(tk.Frame):
-    def __init__(self, parent, main, json):
+    def __init__(self, parent, main, json, itemFrame):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
         self.columnconfigure(2, weight=1)
         self.json = json
         self.main = main
+        self.itemFrame = itemFrame
 
         self.vaultLabelText = tk.StringVar()
         self.vaultLabelText.set("Title:")
@@ -58,3 +59,6 @@ class vaultDetailsFrame(tk.Frame):
     def deleteVault(self):
         utilities.deleteItem(self.json['path'], self.json['filename'])
         self.main.displayDefaultFrame()
+        self.itemFrame.deleteButton(self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])
+        key = utilities.deleteFromJson(self.json, "vault")
+        self.main.updateItems(key, "vault")

@@ -54,9 +54,9 @@ class MainApplication(tk.Frame):
         if key in self.credentials:
             self.detailsFrame = passwordDetailsFrame(self.parent, self, self.credentials[key], self.itemsFrame)
         elif key in self.vault:
-            self.detailsFrame = vaultDetailsFrame(self.parent, self, self.vault[key])
+            self.detailsFrame = vaultDetailsFrame(self.parent, self, self.vault[key], self.itemsFrame)
         else:
-            self.detailsFrame = notesDetailsFrame(self.parent, self, self.notes[key])
+            self.detailsFrame = notesDetailsFrame(self.parent, self, self.notes[key], self.itemsFrame)
         self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
 
         self.passwordGenerator.destroy()

@@ -45,8 +45,13 @@ def deleteFromJson(deleted, type):
 
     typeItems = allItems[type]
     for key, value in typeItems.items():
-        if value['account'] == deleted['account'] and value['username'] == deleted['username'] and value['password'] == deleted['password']:
-            break
+        if 'account' in value:
+            if value['account'] == deleted['account'] and value['username'] == deleted['username'] and value['password'] == deleted['password']:
+                break
+        elif 'title' in value:
+            if value['title'] == deleted['title'] and value['path'] == deleted['path'] and value[
+                'filename'] == deleted['filename']:
+                break
 
     del typeItems[key]
     allItems[type] = typeItems
