@@ -6,7 +6,7 @@ class notesDetailsFrame(tk.Frame):
     def __init__(self, parent, main, json):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
-        self.rowconfigure(9, weight=1)
+        self.rowconfigure(10, weight=1)
         self.columnconfigure(2, weight=1)
         self.json = json
         self.main = main
@@ -41,11 +41,15 @@ class notesDetailsFrame(tk.Frame):
         self.noteBody = tk.StringVar()
         self.decrypted = utilities.decryptNote(self.json['encryption'], self.json['path'], self.json['filename'])
         self.noteBody.set(self.decrypted)
-        self.noteBodyText = scrolledtext.ScrolledText(self, width=60, height=20)
+        self.noteBodyText = scrolledtext.ScrolledText(self, width=60, height=18)
         self.noteBodyText.insert("end", self.noteBody.get())
 
         self.editButton = tk.Button(self, text="Edit", command=self.editNote)
         self.deleteButton = tk.Button(self, text="Delete", command=self.deleteNote)
+
+        self.dateUpdatedText = tk.StringVar()
+        self.dateUpdatedText.set("Updated: " + self.json['updated'])
+        self.dateUpdated = tk.Label(self, textvariable=self.dateUpdatedText)
 
         self.noteLabel.grid(row=0, column=0, sticky='w', padx=10)
         self.noteTitleText.grid(row=1, column=0, sticky='w', padx=10)
@@ -57,9 +61,11 @@ class notesDetailsFrame(tk.Frame):
         self.noteBodyText.grid(row=7, column=0, sticky='w', padx=10)
         self.editButton.grid(row=8, column=0, sticky='w', padx=10, pady=5)
         self.deleteButton.grid(row=8, column=1, sticky='e', padx=10, pady=5)
+        self.dateUpdated.grid(row=9, column=0, sticky='w', padx=10)
 
     def editNote(self):
         pass
 
     def deleteNote(self):
-        utilities.deleteNote(self.json['path'], self.json['filename'])
+        utilities.deleteItem(self.json['path'], self.json['filename'])
+        self.main.displayDefaultFrame()

@@ -1,6 +1,6 @@
 import tkinter as tk
 
-class itemsFrame(tk.Frame):
+class loginItemsFrame(tk.Frame):
     def __init__(self, parent, main, credentials):
         super().__init__()
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)

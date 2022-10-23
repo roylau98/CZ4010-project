@@ -39,8 +39,8 @@ class passwordDetailsFrame(tk.Frame):
         self.passwordViewButton = tk.Button(self, text="View", command=self.unhidePassword)
 
         self.dateUpdatedText = tk.StringVar()
-        self.now = datetime.now()
-        self.dateUpdatedText.set("Updated: " + self.now.strftime('%d %b %Y, %I:%M %p'))
+        # self.dateUpdatedText.set("Updated: " + self.json['updated'].strftime('%d %b %Y, %I:%M %p'))
+        self.dateUpdatedText.set("Updated: " + self.json['updated'])
         self.dateUpdated = tk.Label(self, textvariable=self.dateUpdatedText)
 
         self.accountLabel.grid(row=0, column=0, sticky='w', padx=10)

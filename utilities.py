@@ -32,7 +32,7 @@ def decryptNote(encryption, path, filename):
 
     return encrypted[0]
 
-def deleteNote(path, filename):
+def deleteItem(path, filename):
     try:
         os.remove(path+"/"+filename)
     except OSError as e:
