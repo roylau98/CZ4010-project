@@ -31,4 +31,4 @@ class itemsFrame(tk.Frame):
         for i in range(len(self.button)):
             if self.button[i]['text'] == key:
                 break
-        self.button[i].config(text=newKey)
+        self.button[i].config(text=newKey.strip())

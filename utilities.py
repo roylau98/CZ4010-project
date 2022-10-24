@@ -33,6 +33,10 @@ def decryptNote(encryption, path, filename):
 
     return encrypted[0]
 
+def saveNote(encryption, path, filename):
+    with open(path+"/"+filename, 'w') as f:
+        f.write(encryption)
+
 def deleteItem(path, filename):
     try:
         os.remove(path+"/"+filename)

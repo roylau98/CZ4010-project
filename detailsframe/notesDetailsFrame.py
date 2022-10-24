@@ -65,7 +65,7 @@ class notesDetailsFrame(tk.Frame):
         self.dateUpdated.grid(row=9, column=0, sticky='w', padx=10)
 
     def editNote(self):
-        pass
+        self.main.renderEditFrame("notes", self.json['key'])
 
     def deleteNote(self):
         utilities.deleteItem(self.json['path'], self.json['filename'])

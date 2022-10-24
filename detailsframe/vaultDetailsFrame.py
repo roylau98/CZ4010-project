@@ -7,7 +7,7 @@ class vaultDetailsFrame(tk.Frame):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
-        self.columnconfigure(2, weight=1)
+        self.columnconfigure(3, weight=1)
         self.json = json
         self.main = main
         self.itemFrame = itemFrame
@@ -36,7 +36,8 @@ class vaultDetailsFrame(tk.Frame):
         self.vaultLocationText = tk.Text(self, width=60, height=1)
         self.vaultLocationText.insert("1.0", self.vaultLocation.get())
 
-        self.editButton = tk.Button(self, text="Decrypt", command=self.editVault)
+        self.decryptButton = tk.Button(self, text="Decrypt", command=self.decryptVault)
+        self.editButton = tk.Button(self, text="Edit", command=self.editVault)
         self.deleteButton = tk.Button(self, text="Delete", command=self.deleteVault)
 
         self.dateUpdatedText = tk.StringVar()
@@ -49,12 +50,14 @@ class vaultDetailsFrame(tk.Frame):
         self.vaultEncryptionText.grid(row=3, column=0, sticky='w', padx=10)
         self.locationLabel.grid(row=4, column=0, sticky='w', padx=10)
         self.vaultLocationText.grid(row=5, column=0, sticky='w', padx=10)
-        self.editButton.grid(row=8, column=0, sticky='w', padx=10, pady=5)
-        self.deleteButton.grid(row=8, column=1, sticky='e', padx=10, pady=5)
+        self.decryptButton.grid(row=8, column=0, sticky='w', padx=10, pady=5)
+        self.editButton.grid(row=8, column=1, sticky='w', padx=10, pady=5)
+        self.deleteButton.grid(row=8, column=2, sticky='e', padx=10, pady=5)
         self.dateUpdated.grid(row=9, column=0, sticky='w', padx=10)
-
-    def editVault(self):
+    def decryptVault(self):
         pass
+    def editVault(self):
+        self.main.renderEditFrame("vault", self.json['key'])
 
     def deleteVault(self):
         utilities.deleteItem(self.json['path'], self.json['filename'])

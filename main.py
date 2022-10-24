@@ -4,6 +4,8 @@ from detailsframe.notesDetailsFrame import notesDetailsFrame
 from detailsframe.defaultDetailsFrame import defaultDetailsFrame
 from detailsframe.vaultDetailsFrame import vaultDetailsFrame
 from editcreateframe.passwordEditCreateFrame import passwordEditCreateFrame
+from editcreateframe.vaultEditFrame import vaultEditFrame
+from editcreateframe.notesEditFrame import notesEditFrame
 from servicesFrame import servicesFrame
 from itemsFrame import itemsFrame
 import tkinter as tk
@@ -30,8 +32,7 @@ class MainApplication(tk.Frame):
 
         self.detailsFrame = defaultDetailsFrame(parent)
         self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
-        #self.detailsFrame = passwordEditCreateFrame(self.parent, self, self.credentials['abcd'], self.itemsFrame)
-        #self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
+
         self.passwordGenerator = passwordGeneratorFrame(self.parent)
         self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
@@ -40,24 +41,24 @@ class MainApplication(tk.Frame):
             self.detailsFrame = passwordEditCreateFrame(self.parent, self, self.credentials[key], self.itemsFrame)
             self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
         elif type == "vault":
-            self.vault[json['key']] = json
-            self.items["vault"]['key'] = json
+            self.detailsFrame = vaultEditFrame(self.parent, self, self.vault[key], self.itemsFrame)
+            self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
         else:
-            self.notes[json['key']] = json
-            self.items["notes"]['key'] = json
+            self.detailsFrame = notesEditFrame(self.parent, self, self.notes[key], self.itemsFrame)
+            self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
         self.passwordGenerator = passwordGeneratorFrame(self.parent)
         self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
     def reRenderDetailsFrame(self, json, type):
         if type == "login":
             self.credentials[json['key']] = json
-            self.items["login"]['key'] = json
+            self.items["login"][json['key']] = json
         elif type == "vault":
             self.vault[json['key']] = json
-            self.items["vault"]['key'] = json
+            self.items["vault"][json['key']] = json
         else:
             self.notes[json['key']] = json
-            self.items["notes"]['key'] = json
+            self.items["notes"][json['key']] = json
         self.changeDetailsFrame(json['key'])
     def updateItems(self, key, type):
         if type == "login":
