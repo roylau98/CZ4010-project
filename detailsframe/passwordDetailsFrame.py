@@ -34,7 +34,7 @@ class passwordDetailsFrame(tk.Frame):
         self.passwordLabelText.set("Password:")
         self.passwordLabel = tk.Label(self, textvariable=self.passwordLabelText)
         self.passwordEntryText = tk.StringVar()
-        self.passwordEntryText.set(self.json['password'])
+        self.passwordEntryText.set(self.json['password'][:6])
         self.passwordEntry = tk.Entry(self, text=self.passwordEntryText, width=60, show="*")
         self.passwordCopyButton = tk.Button(self, text="Copy", command=self.copyToClipboard)
         self.passwordViewButton = tk.Button(self, text="View", command=self.unhidePassword)
@@ -75,20 +75,26 @@ class passwordDetailsFrame(tk.Frame):
 
     def copyToClipboard(self):
         self.parent.clipboard_clear()
-        self.parent.clipboard_append(self.passwordEntryText.get())
+        # self.parent.clipboard_append(self.passwordEntryText.get())
+        self.parent.clipboard_append(self.json['password'])
         background = threading.Thread(target=self.clearClipboard, daemon=True)
         background.start()
 
     def clearClipboard(self):
         time.sleep(10)
+        print("Cleared clipboard")
         self.parent.clipboard_clear()
         self.parent.clipboard_append('')
 
     def unhidePassword(self):
         self.passwordEntry.config(show="")
+        self.passwordEntryText.set(self.json['password'])
+        self.passwordEntry.config(text=self.passwordEntryText)
         background = threading.Thread(target=self.hidePassword, daemon=True)
         background.start()
 
     def hidePassword(self):
         time.sleep(10)
+        self.passwordEntryText.set(self.json['password'][:6])
+        self.passwordEntry.config(text=self.passwordEntryText)
         self.passwordEntry.config(show="*")

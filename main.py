@@ -3,9 +3,9 @@ from detailsframe.passwordDetailsFrame import passwordDetailsFrame
 from detailsframe.notesDetailsFrame import notesDetailsFrame
 from detailsframe.defaultDetailsFrame import defaultDetailsFrame
 from detailsframe.vaultDetailsFrame import vaultDetailsFrame
-from editcreateframe.passwordEditCreateFrame import passwordEditCreateFrame
-from editcreateframe.vaultEditFrame import vaultEditFrame
-from editcreateframe.notesEditFrame import notesEditFrame
+from editframe.passwordEditFrame import passwordEditFrame
+from editframe.vaultEditFrame import vaultEditFrame
+from editframe.notesEditFrame import notesEditFrame
 from servicesFrame import servicesFrame
 from itemsFrame import itemsFrame
 import tkinter as tk
@@ -38,7 +38,7 @@ class MainApplication(tk.Frame):
 
     def renderEditFrame(self, type, key):
         if type == "login":
-            self.detailsFrame = passwordEditCreateFrame(self.parent, self, self.credentials[key], self.itemsFrame)
+            self.detailsFrame = passwordEditFrame(self.parent, self, self.credentials[key], self.itemsFrame)
             self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
         elif type == "vault":
             self.detailsFrame = vaultEditFrame(self.parent, self, self.vault[key], self.itemsFrame)

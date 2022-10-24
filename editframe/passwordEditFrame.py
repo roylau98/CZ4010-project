@@ -4,7 +4,7 @@ import time
 import utilities
 from datetime import datetime
 
-class passwordEditCreateFrame(tk.Frame):
+class passwordEditFrame(tk.Frame):
     def __init__(self, parent, main, json, itemFrame):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.json = json

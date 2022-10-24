@@ -21,5 +21,4 @@ class servicesFrame(tk.Frame):
             i += 1
 
     def changeItems(self, item):
-        print(item)
         self.main.changeItemsFrame(item)
