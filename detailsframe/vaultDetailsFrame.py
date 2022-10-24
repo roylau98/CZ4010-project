@@ -60,5 +60,5 @@ class vaultDetailsFrame(tk.Frame):
         utilities.deleteItem(self.json['path'], self.json['filename'])
         self.main.displayDefaultFrame()
         self.itemFrame.deleteButton(self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])
-        key = utilities.deleteFromJson(self.json, "vault")
-        self.main.updateItems(key, "vault")
+        utilities.deleteFromJson(self.json['key'], "vault")
+        self.main.updateItems(self.json['key'], "vault")

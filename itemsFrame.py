@@ -13,7 +13,7 @@ class itemsFrame(tk.Frame):
                 self.button.append(tk.Button(self, text=items[key]['account'] + "\n" + items[key]['username'], command=lambda key=key: self.changeDetails(key), anchor='w'))
             elif "title" in items[key]:
                 self.button.append(
-                    tk.Button(self, text=items[key]['title']+ '\n' + items[key]['path'] + "/" + items[key]['filename'], command=lambda key=key: self.changeDetails(key), anchor='w'))
+                    tk.Button(self, text=items[key]['title'] + '\n' + items[key]['path'] + "/" + items[key]['filename'], command=lambda key=key: self.changeDetails(key), anchor='w'))
             self.button[i].grid(row=i+1, column=0, sticky='nsew', ipadx=178)
             i += 1
 
@@ -26,3 +26,9 @@ class itemsFrame(tk.Frame):
                 break
         self.button[i].destroy()
         del self.button[i]
+
+    def updateItems(self, key, newKey):
+        for i in range(len(self.button)):
+            if self.button[i]['text'] == key:
+                break
+        self.button[i].config(text=newKey)

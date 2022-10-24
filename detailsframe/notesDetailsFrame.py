@@ -71,5 +71,5 @@ class notesDetailsFrame(tk.Frame):
         utilities.deleteItem(self.json['path'], self.json['filename'])
         self.main.displayDefaultFrame()
         self.itemFrame.deleteButton(self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])
-        key = utilities.deleteFromJson(self.json, "notes")
-        self.main.updateItems(key, "notes")
+        utilities.deleteFromJson(self.json['key'], "notes")
+        self.main.updateItems(self.json['key'], "notes")

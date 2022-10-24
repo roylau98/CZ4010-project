@@ -39,19 +39,11 @@ def deleteItem(path, filename):
     except OSError as e:
         print("Note does not exists.")
 
-def deleteFromJson(deleted, type):
+def deleteFromJson(key, type):
     with open('items.json', 'r') as f:
         allItems = json.load(f)
 
     typeItems = allItems[type]
-    for key, value in typeItems.items():
-        if 'account' in value:
-            if value['account'] == deleted['account'] and value['username'] == deleted['username'] and value['password'] == deleted['password']:
-                break
-        elif 'title' in value:
-            if value['title'] == deleted['title'] and value['path'] == deleted['path'] and value[
-                'filename'] == deleted['filename']:
-                break
 
     del typeItems[key]
     allItems[type] = typeItems
@@ -59,4 +51,13 @@ def deleteFromJson(deleted, type):
     with open('items.json', 'w', encoding='utf-8') as f:
         json.dump(allItems, f, ensure_ascii=False, indent=4)
 
-    return key
+def updateJson(key, updated, type):
+    with open('items.json', 'r') as f:
+        allItems = json.load(f)
+
+    typeItems = allItems[type]
+    typeItems[key] = updated
+    allItems[type] = typeItems
+
+    with open('items.json', 'w', encoding='utf-8') as f:
+        json.dump(allItems, f, ensure_ascii=False, indent=4)

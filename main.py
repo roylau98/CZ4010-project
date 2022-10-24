@@ -3,6 +3,7 @@ from detailsframe.passwordDetailsFrame import passwordDetailsFrame
 from detailsframe.notesDetailsFrame import notesDetailsFrame
 from detailsframe.defaultDetailsFrame import defaultDetailsFrame
 from detailsframe.vaultDetailsFrame import vaultDetailsFrame
+from editcreateframe.passwordEditCreateFrame import passwordEditCreateFrame
 from servicesFrame import servicesFrame
 from itemsFrame import itemsFrame
 import tkinter as tk
@@ -29,10 +30,35 @@ class MainApplication(tk.Frame):
 
         self.detailsFrame = defaultDetailsFrame(parent)
         self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
-
-        self.passwordGenerator = passwordGeneratorFrame(parent)
+        #self.detailsFrame = passwordEditCreateFrame(self.parent, self, self.credentials['abcd'], self.itemsFrame)
+        #self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
+        self.passwordGenerator = passwordGeneratorFrame(self.parent)
         self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
+    def renderEditFrame(self, type, key):
+        if type == "login":
+            self.detailsFrame = passwordEditCreateFrame(self.parent, self, self.credentials[key], self.itemsFrame)
+            self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
+        elif type == "vault":
+            self.vault[json['key']] = json
+            self.items["vault"]['key'] = json
+        else:
+            self.notes[json['key']] = json
+            self.items["notes"]['key'] = json
+        self.passwordGenerator = passwordGeneratorFrame(self.parent)
+        self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
+
+    def reRenderDetailsFrame(self, json, type):
+        if type == "login":
+            self.credentials[json['key']] = json
+            self.items["login"]['key'] = json
+        elif type == "vault":
+            self.vault[json['key']] = json
+            self.items["vault"]['key'] = json
+        else:
+            self.notes[json['key']] = json
+            self.items["notes"]['key'] = json
+        self.changeDetailsFrame(json['key'])
     def updateItems(self, key, type):
         if type == "login":
             del self.credentials[key]

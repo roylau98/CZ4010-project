@@ -61,13 +61,13 @@ class passwordDetailsFrame(tk.Frame):
         self.dateUpdated.grid(row=7, column=0, sticky='w', pady=10, padx=10)
 
     def editLogin(self):
-        pass
+        self.main.renderEditFrame("login", self.json['key'])
 
     def deleteLogin(self):
         self.main.displayDefaultFrame()
         self.itemFrame.deleteButton(self.json['account'] + "\n" + self.json['username'])
-        key = utilities.deleteFromJson(self.json, "login")
-        self.main.updateItems(key, "login")
+        utilities.deleteFromJson(self.json['key'], "login")
+        self.main.updateItems(self.json['key'], "login")
 
     def copyUsernameToClipboard(self):
         self.parent.clipboard_clear()
