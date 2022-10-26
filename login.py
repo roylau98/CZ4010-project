@@ -9,7 +9,7 @@ def validateLogin(username, password):
 #window
 tkWindow = Tk()  
 tkWindow.geometry('400x150')  
-tkWindow.title('Tkinter Login Form - pythonexamples.org')
+tkWindow.title('Login')
 
 #username label and text entry box
 usernameLabel = Label(tkWindow, text="User Name").grid(row=0, column=0)
