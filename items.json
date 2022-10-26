@@ -1,0 +1,59 @@
+{
+	"login": {
+		"abcd": {
+			"account": "Reddit",
+			"username": "ABCD",
+			"password": "Password1",
+			"updated": "23 Oct 2022, 03:49 PM",
+			"key": "abcd"
+		}, 
+		"aaaa": {
+			"account": "Facebook",
+			"username": "ECDF",
+			"password": "P@ssword1",
+			"updated": "23 Oct 2022, 03:49 PM",
+			"key": "aaaa"
+		},
+		"cdba": {
+			"account": "Instagram",
+			"username": "luck",
+			"password": "P@ssword1234",
+			"updated": "23 Oct 2022, 03:49 PM",
+			"key": "cdba"
+		},
+		"ac": {
+			"account": "LinkedIn",
+			"username": "Jack",
+			"password": "P@ssw0rd1",
+			"updated": "23 Oct 2022, 03:49 PM",
+			"key": "ac"
+		},
+		"bdg": {
+			"account": "Tiktok",
+			"username": "1234Luke",
+			"password": "P@ssw0rd1222",
+			"updated": "23 Oct 2022, 03:49 PM",
+			"key": "bdg"
+		}
+	},
+	"vault": {
+		"abd": {
+			"title": "Image 1",
+			"filename": "cat.png",
+			"encryption": "AES-256",
+			"path": "./vault",
+			"updated": "23 Oct 2022, 03:49 PM",
+			"key": "abd"
+		}
+	},
+	"notes": {
+		"abhcs": {
+			"title": "My Secure Note",
+			"filename": "text.txt",
+			"encryption": "AES-256",
+			"path": "./notes",
+			"updated": "23 Oct 2022, 03:49 PM",
+			"key": "abhcs"
+		}
+	}
+}
