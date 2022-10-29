@@ -37,5 +37,6 @@ class servicesFrame(tk.Frame):
 
     def changeItems(self, item):
         self.main.changeItemsFrame(item)
+
     def createNew(self, key):
-        self.main.changeCreateFrame(key.strip())
+        self.main.changeCreateFrame(key.strip(), key.strip() == "login")

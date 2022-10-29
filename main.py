@@ -9,6 +9,8 @@ from editframe.notesEditFrame import notesEditFrame
 from servicesFrame import servicesFrame
 from itemsFrame import itemsFrame
 from createframe.notesCreateFrame import notesCreateFrame
+from createframe.passwordCreateFrame import passwordCreateFrame
+from createframe.vaultCreateFrame import vaultCreateFrame
 import tkinter as tk
 import json
 
@@ -99,9 +101,14 @@ class MainApplication(tk.Frame):
             self.displayDefaultFrame()
 
     def changeCreateFrame(self, key, login=True):
-        print("Changing Frame")
         self.detailsFrame.destroy()
-        self.detailsFrame = notesCreateFrame(self.parent, self)
+        if key == "notes":
+            self.detailsFrame = notesCreateFrame(self.parent, self)
+        elif key == "login":
+            self.detailsFrame = passwordCreateFrame(self.parent, self)
+        elif key == "vault":
+            self.detailsFrame = vaultCreateFrame(self.parent, self)
+
         self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
 
         self.itemsFrame.destroy()

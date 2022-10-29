@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import scrolledtext
+from tkinter import messagebox
 import utilities
+from datetime import datetime
+import uuid
 
 class notesCreateFrame(tk.Frame):
     def __init__(self, parent, main):
@@ -13,37 +16,30 @@ class notesCreateFrame(tk.Frame):
         self.noteLabelText = tk.StringVar()
         self.noteLabelText.set("Title:")
         self.noteLabel = tk.Label(self, textvariable=self.noteLabelText)
-        self.noteTitle = tk.StringVar()
         self.noteTitleText = tk.Text(self, width=60, height=1)
-        self.noteTitleText.insert(tk.END, self.noteTitle.get())
 
         self.encryptionLabelText = tk.StringVar()
         self.encryptionLabelText.set("Encryption:")
         self.encryptionLabel = tk.Label(self, textvariable=self.encryptionLabelText)
-        self.noteEncryption = tk.StringVar()
         self.noteEncryptionText = tk.Text(self, width=60, height=1)
-        self.noteEncryptionText.insert("end", self.noteEncryption.get())
 
         self.locationLabelText = tk.StringVar()
         self.locationLabelText.set("Location:")
         self.locationLabel = tk.Label(self, textvariable=self.locationLabelText)
         self.noteLocation = tk.StringVar()
+        self.noteLocation.set("./notes")
         self.noteLocationText = tk.Text(self, width=60, height=1)
         self.noteLocationText.insert("1.0", self.noteLocation.get())
 
         self.filenameLabelText = tk.StringVar()
         self.filenameLabelText.set("Filename:")
         self.filenameLabel = tk.Label(self, textvariable=self.filenameLabelText)
-        self.noteFilename = tk.StringVar()
         self.noteFilenameText = tk.Text(self, width=60, height=1)
-        self.noteFilenameText.insert("1.0", self.noteFilename.get())
 
         self.bodyLabelText = tk.StringVar()
         self.bodyLabelText.set("Body:")
         self.bodyLabel = tk.Label(self, textvariable=self.bodyLabelText)
-        self.noteBody = tk.StringVar()
         self.noteBodyText = scrolledtext.ScrolledText(self, width=60, height=18)
-        self.noteBodyText.insert("end", self.noteBody.get())
 
         self.saveButton = tk.Button(self, text="Save", command=self.saveNote)
 
@@ -60,4 +56,17 @@ class notesCreateFrame(tk.Frame):
         self.saveButton.grid(row=10, column=0, sticky='w', padx=10, pady=5)
 
     def saveNote(self):
-        pass
+        json = {'title': self.noteTitleText.get("1.0", "end-1c"),
+                'filename': self.noteFilenameText.get("1.0", "end-1c"),
+                'encryption': self.noteEncryptionText.get("1.0", "end-1c"),
+                'path': self.noteLocationText.get("1.0", "end-1c"),
+                'updated': datetime.now().strftime('%d %b %Y, %I:%M %p'),
+                'key': uuid.uuid4().hex
+                }
+        if (json['filename'] == "" or json['title'] == ""):
+            messagebox.showwarning(title="Missing information", message="Filename/ Title is missing")
+            return
+        utilities.saveNote(self.noteBodyText.get("1.0", "end-1c"), json['path'], json['filename'])
+        utilities.updateJson(json['key'], json, "notes")
+        self.main.reRenderDetailsFrame(json, "notes")
+        self.main.changeItemsFrame("notes", False)

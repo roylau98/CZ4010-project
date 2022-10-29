@@ -65,3 +65,6 @@ def updateJson(key, updated, type):
 
     with open('items.json', 'w', encoding='utf-8') as f:
         json.dump(allItems, f, ensure_ascii=False, indent=4)
+
+def encryptFile(path):
+    print(path)
