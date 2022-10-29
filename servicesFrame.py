@@ -7,7 +7,7 @@ class servicesFrame(tk.Frame):
         self.main = main
         self.items = list(items)
         self.serviceLabelText = tk.StringVar()
-        self.serviceLabelText.set("Types")
+        self.serviceLabelText.set("Services")
         self.serviceLabel = tk.Label(self, textvariable=self.serviceLabelText)
 
         self.serviceLabel.grid(row=0, column=0, pady=30)
@@ -20,5 +20,22 @@ class servicesFrame(tk.Frame):
             self.button[i].grid(row=i + 1, column=0, sticky='nsew', ipadx=80)
             i += 1
 
+        self.choices = ["                      login                    ",
+                        "                      vault                    ",
+                        "                      notes                    "]
+        self.choice = tk.StringVar()
+        self.choice.set(self.choices[0])
+
+        self.newLabelText = tk.StringVar()
+        self.newLabelText.set("New Entry")
+        self.newserviceLabel = tk.Label(self, textvariable=self.newLabelText)
+        self.newserviceLabel.grid(row=i+1, column=0, pady=80, sticky='s')
+
+        self.dropdownList = tk.OptionMenu(self, self.choice, *self.choices, command=self.createNew)
+        self.dropdownList.config(width=30)
+        self.dropdownList.grid(row=i+2, column=0, sticky='nsew')
+
     def changeItems(self, item):
         self.main.changeItemsFrame(item)
+    def createNew(self, key):
+        self.main.changeCreateFrame(key.strip())

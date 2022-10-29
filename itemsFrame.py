@@ -14,7 +14,7 @@ class itemsFrame(tk.Frame):
             elif "title" in items[key]:
                 self.button.append(
                     tk.Button(self, text=items[key]['title'] + '\n' + items[key]['path'] + "/" + items[key]['filename'], command=lambda key=key: self.changeDetails(key), anchor='w'))
-            self.button[i].grid(row=i+1, column=0, sticky='nsew', ipadx=178)
+            self.button[i].grid(row=i+1, column=0, sticky='nsew', ipadx=175)
             i += 1
 
     def changeDetails(self, key):

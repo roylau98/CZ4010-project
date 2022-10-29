@@ -90,6 +90,8 @@ class passwordGeneratorFrame(tk.Frame):
         self.output.insert("end", password)
 
         background = threading.Thread(target=self.clearOutputBackground, daemon=True)
+        for thread in threading.enumerate():
+            print(thread.name)
         background.start()
         return password
 

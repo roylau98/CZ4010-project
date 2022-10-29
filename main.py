@@ -8,6 +8,7 @@ from editframe.vaultEditFrame import vaultEditFrame
 from editframe.notesEditFrame import notesEditFrame
 from servicesFrame import servicesFrame
 from itemsFrame import itemsFrame
+from createframe.notesCreateFrame import notesCreateFrame
 import tkinter as tk
 import json
 
@@ -90,11 +91,27 @@ class MainApplication(tk.Frame):
         self.passwordGenerator = passwordGeneratorFrame(self.parent)
         self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
-    def changeItemsFrame(self, key):
+    def changeItemsFrame(self, key, default=True):
         self.itemsFrame.destroy()
         self.itemsFrame = itemsFrame(self.parent, self, self.items[key])
         self.itemsFrame.grid(row=0, column=1, rowspan=3,sticky='nsew')
-        self.displayDefaultFrame()
+        if default:
+            self.displayDefaultFrame()
+
+    def changeCreateFrame(self, key, login=True):
+        print("Changing Frame")
+        self.detailsFrame.destroy()
+        self.detailsFrame = notesCreateFrame(self.parent, self)
+        self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
+
+        self.itemsFrame.destroy()
+        self.changeItemsFrame(key, False)
+        self.itemsFrame.grid(row=0, column=1, rowspan=3, sticky='nsew')
+
+        if login:
+            self.passwordGenerator = passwordGeneratorFrame(self.parent)
+            self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
+
 
 if __name__ == "__main__":
     root = tk.Tk()
