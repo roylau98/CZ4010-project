@@ -1,124 +1,47 @@
-from passwordGeneratorFrame import passwordGeneratorFrame
-from detailsframe.passwordDetailsFrame import passwordDetailsFrame
-from detailsframe.notesDetailsFrame import notesDetailsFrame
-from detailsframe.defaultDetailsFrame import defaultDetailsFrame
-from detailsframe.vaultDetailsFrame import vaultDetailsFrame
-from editframe.passwordEditFrame import passwordEditFrame
-from editframe.vaultEditFrame import vaultEditFrame
-from editframe.notesEditFrame import notesEditFrame
-from servicesFrame import servicesFrame
-from itemsFrame import itemsFrame
-from createframe.notesCreateFrame import notesCreateFrame
-from createframe.passwordCreateFrame import passwordCreateFrame
-from createframe.vaultCreateFrame import vaultCreateFrame
 import tkinter as tk
 import json
+from functools import partial
+from mainApplication import MainApplication
+from register import registerFrame
 
-class MainApplication(tk.Frame):
+class loginFrame(tk.Frame):
     def __init__(self, parent):
         super().__init__()
-        with open('items.json', 'r') as f:
-            self.items = json.load(f)
-        self.credentials = self.items['login']
-        self.vault = self.items['vault']
-        self.notes = self.items['notes']
-
         self.parent = parent
-        self.rowconfigure(3, weight=1)
-        self.columnconfigure(3, weight=1)
 
-        self.servicesFrame = servicesFrame(parent, self, self.items)
-        self.servicesFrame.grid(row=0, column=0, rowspan=3, sticky='nsew')
+        # username label and text entry box
+        self.usernameLabel = tk.Label(self, text="Username: ")
+        self.username = tk.StringVar()
+        self.usernameEntry = tk.Entry(self, textvariable=self.username)
 
-        self.itemsFrame = itemsFrame(parent, self, self.credentials)
-        self.itemsFrame.grid(row=0, column=1, rowspan=3,sticky='nsew')
+        # password label and password entry box
+        self.passwordLabel = tk.Label(self, text="Password: ")
+        self.password = tk.StringVar()
+        self.passwordEntry = tk.Entry(self, textvariable=self.password, show='*')
 
-        self.detailsFrame = defaultDetailsFrame(parent)
-        self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
+        # login button
+        self.loginButton = tk.Button(self, text="Login", command=self.validateLogin)
+        self.registerButton = tk.Button(self, text="Register", command=self.registerUser)
 
-        self.passwordGenerator = passwordGeneratorFrame(self.parent)
-        self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
+        self.usernameLabel.grid(row=0, column=0)
+        self.usernameEntry.grid(row=0, column=1)
+        self.passwordLabel.grid(row=1, column=0)
+        self.passwordEntry.grid(row=1, column=1)
+        self.loginButton.grid(row=2, column=0)
+        self.registerButton.grid(row=2, column=1)
 
-    def renderEditFrame(self, type, key):
-        if type == "login":
-            self.detailsFrame = passwordEditFrame(self.parent, self, self.credentials[key], self.itemsFrame)
-            self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
-        elif type == "vault":
-            self.detailsFrame = vaultEditFrame(self.parent, self, self.vault[key], self.itemsFrame)
-            self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
-        else:
-            self.detailsFrame = notesEditFrame(self.parent, self, self.notes[key], self.itemsFrame)
-            self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
-        self.passwordGenerator = passwordGeneratorFrame(self.parent)
-        self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
+    def validateLogin(self):
+        print("username entered :", self.usernameEntry.get())
+        print("password entered :", self.passwordEntry.get())
+        MainApplication(self.parent).grid(sticky='nsew')
+        return
 
-    def reRenderDetailsFrame(self, json, type):
-        if type == "login":
-            self.credentials[json['key']] = json
-            self.items["login"][json['key']] = json
-        elif type == "vault":
-            self.vault[json['key']] = json
-            self.items["vault"][json['key']] = json
-        else:
-            self.notes[json['key']] = json
-            self.items["notes"][json['key']] = json
-        self.changeDetailsFrame(json['key'])
-    def updateItems(self, key, type):
-        if type == "login":
-            del self.credentials[key]
-        elif type == "vault":
-            del self.vault[key]
-        else:
-            del self.notes[key]
-    def displayDefaultFrame(self):
-        self.detailsFrame.destroy()
-        self.detailsFrame = defaultDetailsFrame(self.parent)
-        self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
+    def registerUser(self):
+        self.grid_forget()
+        registerFrame(self.parent, self).grid(row=1, column=1)
 
-        self.passwordGenerator.destroy()
-        self.passwordGenerator = passwordGeneratorFrame(self.parent)
-        self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
-
-    def changeDetailsFrame(self, key):
-        self.detailsFrame.destroy()
-        if key in self.credentials:
-            self.detailsFrame = passwordDetailsFrame(self.parent, self, self.credentials[key], self.itemsFrame)
-        elif key in self.vault:
-            self.detailsFrame = vaultDetailsFrame(self.parent, self, self.vault[key], self.itemsFrame)
-        else:
-            self.detailsFrame = notesDetailsFrame(self.parent, self, self.notes[key], self.itemsFrame)
-        self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
-
-        self.passwordGenerator.destroy()
-        self.passwordGenerator = passwordGeneratorFrame(self.parent)
-        self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
-
-    def changeItemsFrame(self, key, default=True):
-        self.itemsFrame.destroy()
-        self.itemsFrame = itemsFrame(self.parent, self, self.items[key])
-        self.itemsFrame.grid(row=0, column=1, rowspan=3,sticky='nsew')
-        if default:
-            self.displayDefaultFrame()
-
-    def changeCreateFrame(self, key, login=True):
-        self.detailsFrame.destroy()
-        if key == "notes":
-            self.detailsFrame = notesCreateFrame(self.parent, self)
-        elif key == "login":
-            self.detailsFrame = passwordCreateFrame(self.parent, self)
-        elif key == "vault":
-            self.detailsFrame = vaultCreateFrame(self.parent, self)
-
-        self.detailsFrame.grid(row=1, column=2, rowspan=2, columnspan=3, sticky='nsew')
-
-        self.itemsFrame.destroy()
-        self.changeItemsFrame(key, False)
-        self.itemsFrame.grid(row=0, column=1, rowspan=3, sticky='nsew')
-
-        if login:
-            self.passwordGenerator = passwordGeneratorFrame(self.parent)
-            self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
-
+    def loginPage(self):
+        loginFrame(self.parent).grid(row=1, column=1)
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -126,5 +49,5 @@ if __name__ == "__main__":
     root.title("Vault")
     root.rowconfigure(1, weight=1)
     root.columnconfigure(1, weight=1)
-    MainApplication(root).grid(sticky='w')#side="top", fill="both", expand=True)
+    loginFrame(root).grid(row=1, column=1)#side="top", fill="both", expand=True)
     root.mainloop()
