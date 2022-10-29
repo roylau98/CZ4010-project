@@ -8,7 +8,6 @@ class loginFrame(tk.Frame):
     def __init__(self, parent):
         super().__init__()
         self.parent = parent
-
         # username label and text entry box
         self.usernameLabel = tk.Label(self, text="Username: ")
         self.username = tk.StringVar()

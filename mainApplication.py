@@ -75,9 +75,9 @@ class MainApplication(tk.Frame):
         self.detailsFrame = defaultDetailsFrame(self.parent)
         self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
 
-        self.passwordGenerator.destroy()
-        self.passwordGenerator = passwordGeneratorFrame(self.parent)
-        self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
+        #self.passwordGenerator.destroy()
+        #self.passwordGenerator = passwordGeneratorFrame(self.parent)
+        #self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
     def changeDetailsFrame(self, key):
         self.detailsFrame.destroy()
@@ -89,9 +89,9 @@ class MainApplication(tk.Frame):
             self.detailsFrame = notesDetailsFrame(self.parent, self, self.notes[key], self.itemsFrame)
         self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
 
-        self.passwordGenerator.destroy()
-        self.passwordGenerator = passwordGeneratorFrame(self.parent)
-        self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
+        #self.passwordGenerator.destroy()
+        #self.passwordGenerator = passwordGeneratorFrame(self.parent)
+        #self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
     def changeItemsFrame(self, key, default=True):
         self.itemsFrame.destroy()
@@ -100,7 +100,7 @@ class MainApplication(tk.Frame):
         if default:
             self.displayDefaultFrame()
 
-    def changeCreateFrame(self, key, login=True):
+    def changeCreateFrame(self, key):
         self.detailsFrame.destroy()
         if key == "notes":
             self.detailsFrame = notesCreateFrame(self.parent, self)
@@ -114,10 +114,6 @@ class MainApplication(tk.Frame):
         self.itemsFrame.destroy()
         self.changeItemsFrame(key, False)
         self.itemsFrame.grid(row=0, column=1, rowspan=3, sticky='nsew')
-
-        if login:
-            self.passwordGenerator = passwordGeneratorFrame(self.parent)
-            self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
 
 if __name__ == "__main__":
