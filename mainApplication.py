@@ -49,8 +49,8 @@ class MainApplication(tk.Frame):
         else:
             self.detailsFrame = notesEditFrame(self.parent, self, self.notes[key], self.itemsFrame)
             self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
-        self.passwordGenerator = passwordGeneratorFrame(self.parent)
-        self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
+        #self.passwordGenerator = passwordGeneratorFrame(self.parent)
+        #self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
     def reRenderDetailsFrame(self, json, type):
         if type == "login":

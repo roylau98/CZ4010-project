@@ -2,6 +2,7 @@ import secrets
 import string
 import os
 import json
+import scrypt
 
 def passwordGenerator(pool, length):
     password = ""
@@ -68,3 +69,7 @@ def updateJson(key, updated, type):
 
 def encryptFile(path):
     print(path)
+
+def KDF(string):
+    key = scrypt.hash(string, "", 1024, 8, 1, 32)
+    print(key.hex())
