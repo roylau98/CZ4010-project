@@ -73,3 +73,6 @@ def encryptFile(path):
 def KDF(string):
     key = scrypt.hash(string, "", 1024, 8, 1, 32)
     print(key.hex())
+
+def encryptAESGCM(key, message):
+    return message

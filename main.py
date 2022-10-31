@@ -30,8 +30,6 @@ class loginFrame(tk.Frame):
         self.loginButton.grid(row=2, column=0)
         self.registerButton.grid(row=2, column=1)
 
-
-
     def validateLogin(self):
         print("username entered :", self.usernameEntry.get())
         print("password entered :", self.passwordEntry.get())

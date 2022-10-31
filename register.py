@@ -2,6 +2,9 @@ import tkinter as tk
 import json
 import os
 import configparser
+from tkinter import messagebox
+from firebase import Firebase
+import utilities
 
 class registerFrame(tk.Frame):
     def __init__(self, parent, login):
@@ -39,15 +42,28 @@ class registerFrame(tk.Frame):
         self.return_btn.grid(row=7, column=0, pady=10, padx=20)
 
     def registerUser(self):
+        if (self.register_email.get() == "" or self.register_username.get() == "" or self.register_pwd.get() == ""
+                or self.pwd_again.get() == ""):
+            messagebox.showwarning("Error", message="Missing fields!")
+            return
+
+        if (self.register_pwd.get() != self.pwd_again.get()):
+            messagebox.showwarning("Error", message="Entered password does not match!")
+            return
+
+        email = self.register_email.get()
+        password = self.register_pwd.get()
         config = configparser.ConfigParser()
 
         salt = os.urandom(32)
-        config['CONFIGURATION'] = {'salt': salt.hex()}
-        print(salt)
-        print(salt.hex())
-        print(bytes.fromhex(salt.hex()))
+        encryptedSalt = utilities.encryptAESGCM(email+password, salt)
+        config['CONFIGURATION'] = {'salt': encryptedSalt.hex()}
         with open('config.ini', 'w') as f:
             config.write(f)
+
+        firebaseDB = Firebase()
+        firebaseDB.registerUser(salt.hex())
+        # firebaseDB.getLoginDetails(salt.hex())
 
     def returnLogin(self):
         self.grid_forget()
