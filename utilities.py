@@ -72,7 +72,9 @@ def encryptFile(path):
 
 def KDF(string):
     key = scrypt.hash(string, "", 1024, 8, 1, 32)
+    return key.hex()
     print(key.hex())
 
 def encryptAESGCM(key, message):
-    return message
+    iv = os.urandom(16)
+    return message, iv

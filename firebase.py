@@ -1,7 +1,8 @@
 import pyrebase
+from datetime import datetime
 
 config = {
-  "<change me>"
+  "change me"
 }
 
 class Firebase:
@@ -10,8 +11,16 @@ class Firebase:
         self.db = self.firebase.database()
 
     def registerUser(self, auth):
-        self.db.child(auth).set({"auth": auth})
+        self.db.child(auth).set({"auth": auth,
+                                 "lastLogin": datetime.now().strftime('%d %b %Y, %I:%M %p')})
 
+    def authenticate(self, auth):
+        if self.db.child(auth).get().val():
+            lastLogin = self.db.child(auth+"/lastLogin").get().val()
+            self.db.child(auth).update({"lastLogin": datetime.now().strftime('%d %b %Y, %I:%M %p')})
+            return lastLogin
+        else:
+            return None
 
     def getLoginDetails(self, auth):
         logins = self.db.child("users/"+auth).get()

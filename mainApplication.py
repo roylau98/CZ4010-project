@@ -15,13 +15,15 @@ import tkinter as tk
 import json
 
 class MainApplication(tk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, lastLogin, firebase):
         super().__init__()
         with open('items.json', 'r') as f:
             self.items = json.load(f)
         self.credentials = self.items['login']
         self.vault = self.items['vault']
         self.notes = self.items['notes']
+        self.lastLogin = lastLogin
+        self.firebase = firebase
 
         self.parent = parent
         self.rowconfigure(3, weight=1)

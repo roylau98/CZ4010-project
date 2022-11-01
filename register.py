@@ -5,6 +5,8 @@ import configparser
 from tkinter import messagebox
 from firebase import Firebase
 import utilities
+import uuid
+import base64
 
 class registerFrame(tk.Frame):
     def __init__(self, parent, login):
@@ -53,16 +55,21 @@ class registerFrame(tk.Frame):
 
         email = self.register_email.get()
         password = self.register_pwd.get()
+        KDFEmailPassword = utilities.KDF(email+password)
         config = configparser.ConfigParser()
 
-        salt = os.urandom(32)
-        encryptedSalt = utilities.encryptAESGCM(email+password, salt)
-        config['CONFIGURATION'] = {'salt': encryptedSalt.hex()}
+        salt = uuid.uuid4()
+        encryptedSalt, iv = utilities.encryptAESGCM(KDFEmailPassword, salt)
+        config['CONFIGURATION'] = {'salt': salt,
+                                   'iv': iv}
         with open('config.ini', 'w') as f:
             config.write(f)
 
         firebaseDB = Firebase()
-        firebaseDB.registerUser(salt.hex())
+        firebaseDB.registerUser(email+password+str(salt))
+        messagebox.showinfo(title="Success", message="Successfully registered user!")
+        self.grid_forget()
+        self.login.loginPage()
         # firebaseDB.getLoginDetails(salt.hex())
 
     def returnLogin(self):
