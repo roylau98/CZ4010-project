@@ -60,8 +60,9 @@ class registerFrame(tk.Frame):
 
         salt = uuid.uuid4()
         encryptedSalt, iv = utilities.encryptAESGCM(KDFEmailPassword, salt)
+
         config['CONFIGURATION'] = {'salt': salt,
-                                   'iv': iv}
+                                   'iv': iv.hex()}
         with open('config.ini', 'w') as f:
             config.write(f)
 

@@ -42,7 +42,7 @@ class loginFrame(tk.Frame):
         config = configparser.ConfigParser()
         config.read('config.ini')
         salt = config['CONFIGURATION']['salt']
-        iv = config['CONFIGURATION']['iv']
+        iv = bytes.fromhex(config['CONFIGURATION']['iv'])
         print(salt)
         print(iv)
         lastLogin = self.firebase.authenticate(email+password+salt)
@@ -51,7 +51,7 @@ class loginFrame(tk.Frame):
             return
 
         print(lastLogin)
-        MainApplication(self.parent, lastLogin, firebase).grid(sticky='nsew')
+        MainApplication(self.parent, self, lastLogin, self.firebase).grid(sticky='nsew')
         return
 
     def registerUser(self):

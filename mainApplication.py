@@ -15,7 +15,7 @@ import tkinter as tk
 import json
 
 class MainApplication(tk.Frame):
-    def __init__(self, parent, lastLogin, firebase):
+    def __init__(self, parent, login, lastLogin, firebase):
         super().__init__()
         with open('items.json', 'r') as f:
             self.items = json.load(f)
@@ -24,12 +24,13 @@ class MainApplication(tk.Frame):
         self.notes = self.items['notes']
         self.lastLogin = lastLogin
         self.firebase = firebase
+        self.login = login
 
         self.parent = parent
         self.rowconfigure(3, weight=1)
         self.columnconfigure(3, weight=1)
 
-        self.servicesFrame = servicesFrame(parent, self, self.items)
+        self.servicesFrame = servicesFrame(parent, self, self.items, self.lastLogin)
         self.servicesFrame.grid(row=0, column=0, rowspan=3, sticky='nsew')
 
         self.itemsFrame = itemsFrame(parent, self, self.credentials)
@@ -116,6 +117,13 @@ class MainApplication(tk.Frame):
         self.itemsFrame.destroy()
         self.changeItemsFrame(key, False)
         self.itemsFrame.grid(row=0, column=1, rowspan=3, sticky='nsew')
+
+    def logout(self):
+        self.detailsFrame.destroy()
+        self.itemsFrame.destroy()
+        self.servicesFrame.destroy()
+        self.passwordGenerator.destroy()
+        self.login.loginPage()
 
 
 if __name__ == "__main__":

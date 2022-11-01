@@ -2,7 +2,7 @@ import pyrebase
 from datetime import datetime
 
 config = {
-  "change me"
+  "chamge me"
 }
 
 class Firebase:
