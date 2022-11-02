@@ -15,7 +15,7 @@ import tkinter as tk
 import json
 
 class MainApplication(tk.Frame):
-    def __init__(self, parent, login, lastLogin, firebase):
+    def __init__(self, parent, login, lastLogin, firebase, vaultKey):
         super().__init__()
         with open('items.json', 'r') as f:
             self.items = json.load(f)
@@ -25,6 +25,7 @@ class MainApplication(tk.Frame):
         self.lastLogin = lastLogin
         self.firebase = firebase
         self.login = login
+        self.vaultKey = vaultKey
 
         self.parent = parent
         self.rowconfigure(3, weight=1)

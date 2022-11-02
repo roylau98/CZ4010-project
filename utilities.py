@@ -70,10 +70,9 @@ def updateJson(key, updated, type):
 def encryptFile(path):
     print(path)
 
-def KDF(string):
-    key = scrypt.hash(string, "", 1024, 8, 1, 32)
-    return key.hex()
-    print(key.hex())
+def KDF(string, salt):
+    key = scrypt.hash(string, salt, 524288, 8, 1, 32)
+    return key
 
 def encryptAESGCM(key, message):
     iv = os.urandom(16)

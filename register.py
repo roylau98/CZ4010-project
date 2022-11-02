@@ -55,19 +55,23 @@ class registerFrame(tk.Frame):
 
         email = self.register_email.get()
         password = self.register_pwd.get()
-        KDFEmailPassword = utilities.KDF(email+password)
+        username = self.register_username.get()
+        salt = os.urandom(16)
+
+        # (email | password) as plaintext, (password | username) as salt
+        encryptionKey = utilities.KDF(email+password, password+username)
+        authKey = utilities.KDF(encryptionKey+salt, salt+email.encode())
+
+        encryptedSalt, iv = utilities.encryptAESGCM(encryptionKey, salt)
         config = configparser.ConfigParser()
 
-        salt = uuid.uuid4()
-        encryptedSalt, iv = utilities.encryptAESGCM(KDFEmailPassword, salt)
-
-        config['CONFIGURATION'] = {'salt': salt,
+        config['CONFIGURATION'] = {'salt': encryptedSalt.hex(),
                                    'iv': iv.hex()}
         with open('config.ini', 'w') as f:
             config.write(f)
 
         firebaseDB = Firebase()
-        firebaseDB.registerUser(email+password+str(salt))
+        firebaseDB.registerUser(authKey.hex())
         messagebox.showinfo(title="Success", message="Successfully registered user!")
         self.grid_forget()
         self.login.loginPage()
