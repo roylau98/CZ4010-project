@@ -18,18 +18,18 @@ import json
 class MainApplication(tk.Frame):
     def __init__(self, parent, login, lastLogin, firebase, vaultKey):
         super().__init__()
+        self.lastLogin = lastLogin
+        self.firebase = firebase
+        self.login = login
+        self.vaultKey = vaultKey
+
         self.database = DataBase("abc.db")
-        self.credentials = self.database.fetchAllLogin()
+        self.credentials = self.database.fetchAllLogin(vaultKey)
         self.vault = self.database.fetchAllVault()
         self.notes = self.database.fetchAllNotes()
         self.items = {"login": self.credentials,
                       "notes": self.notes,
                       "vault": self.vault}
-
-        self.lastLogin = lastLogin
-        self.firebase = firebase
-        self.login = login
-        self.vaultKey = vaultKey
 
         self.parent = parent
         self.rowconfigure(3, weight=1)
@@ -113,7 +113,7 @@ class MainApplication(tk.Frame):
         if key == "notes":
             self.detailsFrame = notesCreateFrame(self.parent, self, self.database)
         elif key == "login":
-            self.detailsFrame = passwordCreateFrame(self.parent, self, self.database)
+            self.detailsFrame = passwordCreateFrame(self.parent, self, self.database, self.vaultKey)
         elif key == "vault":
             self.detailsFrame = vaultCreateFrame(self.parent, self, self.database)
 

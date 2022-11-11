@@ -1,4 +1,5 @@
 import sqlite3
+import utilities
 
 class DataBase:
     def __init__(self, database):
@@ -42,16 +43,15 @@ class DataBase:
         self.cursor.execute(setupNotes)
         self.connection.commit()
 
-    def fetchAllLogin(self):
-        command = "SELECT * " \
-                  "FROM login;"
+    def fetchAllLogin(self, vaultKey):
+        command = "SELECT * FROM login;"
         self.cursor.execute(command)
         data = self.cursor.fetchall()
         dict = {}
         for i in data:
             dict[i[5]] = {"account": i[0],
                           "username": i[1],
-                          "password": i[2],
+                          "password": utilities.decrypt(vaultKey, bytes.fromhex(i[2]), bytes.fromhex(i[4])),
                           "updated": i[3],
                           "iv": i[4],
                           "key": i[5]}

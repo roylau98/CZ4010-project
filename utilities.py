@@ -3,6 +3,8 @@ import string
 import os
 import json
 import scrypt
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
 
 def passwordGenerator(pool, length):
     password = ""
@@ -74,6 +76,13 @@ def KDF(string, salt):
     key = scrypt.hash(string, salt, 524288, 8, 1, 32)
     return key
 
-def encryptAESGCM(key, message):
+def encrypt(key, message):
     iv = os.urandom(16)
-    return message, iv
+    cipher = AES.new(key, AES.MODE_CBC, iv=iv)
+    encrypted = cipher.encrypt(pad(message, cipher.block_size))
+    return encrypted, iv
+
+def decrypt(key, encrypted, iv):
+    cipher = AES.new(key, AES.MODE_CBC, iv=iv)
+    decrypted = cipher.decrypt(encrypted)
+    return unpad(decrypted, cipher.block_size)
