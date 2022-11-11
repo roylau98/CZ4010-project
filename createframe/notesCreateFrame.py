@@ -6,12 +6,13 @@ from datetime import datetime
 import uuid
 
 class notesCreateFrame(tk.Frame):
-    def __init__(self, parent, main):
+    def __init__(self, parent, main, database):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(11, weight=1)
         self.columnconfigure(2, weight=1)
         self.main = main
+        self.database = database
 
         self.noteLabelText = tk.StringVar()
         self.noteLabelText.set("Title:")

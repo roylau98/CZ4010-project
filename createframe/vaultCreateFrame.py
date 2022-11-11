@@ -5,12 +5,13 @@ import uuid
 from tkinter import messagebox
 from datetime import datetime
 class vaultCreateFrame(tk.Frame):
-    def __init__(self, parent, main):
+    def __init__(self, parent, main, database):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
         self.columnconfigure(3, weight=1)
         self.main = main
+        self.database = database
 
         self.vaultLabelText = tk.StringVar()
         self.vaultLabelText.set("Title:")

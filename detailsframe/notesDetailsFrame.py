@@ -3,7 +3,7 @@ from tkinter import scrolledtext
 import utilities
 
 class notesDetailsFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame):
+    def __init__(self, parent, main, json, itemFrame, database):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
@@ -11,6 +11,7 @@ class notesDetailsFrame(tk.Frame):
         self.json = json
         self.main = main
         self.itemFrame = itemFrame
+        self.database = database
 
         self.noteLabelText = tk.StringVar()
         self.noteLabelText.set("Title:")

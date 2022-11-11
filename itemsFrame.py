@@ -1,9 +1,11 @@
 import tkinter as tk
+from datetime import datetime
 
 class itemsFrame(tk.Frame):
     def __init__(self, parent, main, items):
         super().__init__()
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
+        self.current = datetime.now()
 
         self.main = main
         self.button = []
@@ -11,6 +13,10 @@ class itemsFrame(tk.Frame):
         for key in items:
             if "account" in items[key]:
                 self.button.append(tk.Button(self, text=items[key]['account'] + "\n" + items[key]['username'], command=lambda key=key: self.changeDetails(key), anchor='w'))
+                formattedDate = datetime.strptime(items[key]['updated'], '%d %b %Y, %I:%M %p')
+                difference = (self.current.year - formattedDate.year) * 12 + (self.current.month - formattedDate.month)
+                if difference >= 3:
+                    self.button[i].config(fg="red")
             elif "title" in items[key]:
                 self.button.append(
                     tk.Button(self, text=items[key]['title'] + '\n' + items[key]['path'] + "/" + items[key]['filename'], command=lambda key=key: self.changeDetails(key), anchor='w'))

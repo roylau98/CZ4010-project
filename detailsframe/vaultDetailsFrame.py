@@ -3,7 +3,7 @@ import utilities
 
 
 class vaultDetailsFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame):
+    def __init__(self, parent, main, json, itemFrame, database):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
@@ -11,6 +11,7 @@ class vaultDetailsFrame(tk.Frame):
         self.json = json
         self.main = main
         self.itemFrame = itemFrame
+        self.database = database
 
         self.vaultLabelText = tk.StringVar()
         self.vaultLabelText.set("Title:")

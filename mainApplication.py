@@ -11,21 +11,25 @@ from itemsFrame import itemsFrame
 from createframe.notesCreateFrame import notesCreateFrame
 from createframe.passwordCreateFrame import passwordCreateFrame
 from createframe.vaultCreateFrame import vaultCreateFrame
+from database import DataBase
 import tkinter as tk
 import json
 
 class MainApplication(tk.Frame):
     def __init__(self, parent, login, lastLogin, firebase, vaultKey):
         super().__init__()
+        self.database = DataBase("abc.db")
+        self.credentials = self.database.fetchAllLogin()
+
         with open('items.json', 'r') as f:
             self.items = json.load(f)
-        self.credentials = self.items['login']
         self.vault = self.items['vault']
         self.notes = self.items['notes']
         self.lastLogin = lastLogin
         self.firebase = firebase
         self.login = login
         self.vaultKey = vaultKey
+
 
         self.parent = parent
         self.rowconfigure(3, weight=1)
@@ -45,13 +49,13 @@ class MainApplication(tk.Frame):
 
     def renderEditFrame(self, type, key):
         if type == "login":
-            self.detailsFrame = passwordEditFrame(self.parent, self, self.credentials[key], self.itemsFrame)
+            self.detailsFrame = passwordEditFrame(self.parent, self, self.credentials[key], self.itemsFrame, self.database)
             self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
         elif type == "vault":
-            self.detailsFrame = vaultEditFrame(self.parent, self, self.vault[key], self.itemsFrame)
+            self.detailsFrame = vaultEditFrame(self.parent, self, self.vault[key], self.itemsFrame, self.database)
             self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
         else:
-            self.detailsFrame = notesEditFrame(self.parent, self, self.notes[key], self.itemsFrame)
+            self.detailsFrame = notesEditFrame(self.parent, self, self.notes[key], self.itemsFrame, self.database)
             self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
         #self.passwordGenerator = passwordGeneratorFrame(self.parent)
         #self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
@@ -86,11 +90,11 @@ class MainApplication(tk.Frame):
     def changeDetailsFrame(self, key):
         self.detailsFrame.destroy()
         if key in self.credentials:
-            self.detailsFrame = passwordDetailsFrame(self.parent, self, self.credentials[key], self.itemsFrame)
+            self.detailsFrame = passwordDetailsFrame(self.parent, self, self.credentials[key], self.itemsFrame, self.database)
         elif key in self.vault:
-            self.detailsFrame = vaultDetailsFrame(self.parent, self, self.vault[key], self.itemsFrame)
+            self.detailsFrame = vaultDetailsFrame(self.parent, self, self.vault[key], self.itemsFrame, self.database)
         else:
-            self.detailsFrame = notesDetailsFrame(self.parent, self, self.notes[key], self.itemsFrame)
+            self.detailsFrame = notesDetailsFrame(self.parent, self, self.notes[key], self.itemsFrame, self.database)
         self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
 
         #self.passwordGenerator.destroy()
@@ -107,11 +111,11 @@ class MainApplication(tk.Frame):
     def changeCreateFrame(self, key):
         self.detailsFrame.destroy()
         if key == "notes":
-            self.detailsFrame = notesCreateFrame(self.parent, self)
+            self.detailsFrame = notesCreateFrame(self.parent, self, self.database)
         elif key == "login":
-            self.detailsFrame = passwordCreateFrame(self.parent, self)
+            self.detailsFrame = passwordCreateFrame(self.parent, self, self.database)
         elif key == "vault":
-            self.detailsFrame = vaultCreateFrame(self.parent, self)
+            self.detailsFrame = vaultCreateFrame(self.parent, self, self.database)
 
         self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
 
@@ -133,5 +137,10 @@ if __name__ == "__main__":
     root.title("Vault")
     root.rowconfigure(1, weight=1)
     root.columnconfigure(1, weight=1)
-    MainApplication(root).grid(sticky='w')#side="top", fill="both", expand=True)
+    from firebase import Firebase
+    base = Firebase()
+    login = ""
+    lastLogin = "23 Oct 2022"
+    vaultkey = ""
+    MainApplication(root, login, lastLogin, base, vaultkey).grid(sticky='w')#side="top", fill="both", expand=True)
     root.mainloop()

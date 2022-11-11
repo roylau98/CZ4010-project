@@ -6,7 +6,7 @@ import utilities
 from datetime import datetime
 
 class passwordDetailsFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame):
+    def __init__(self, parent, main, json, itemFrame, database):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.json = json
         self.parent = parent
@@ -14,6 +14,7 @@ class passwordDetailsFrame(tk.Frame):
         self.columnconfigure(3, weight=1)
         self.main = main
         self.itemFrame = itemFrame
+        self.database = database
 
         self.accountLabelText = tk.StringVar()
         self.accountLabelText.set("Account:")
@@ -66,7 +67,8 @@ class passwordDetailsFrame(tk.Frame):
     def deleteLogin(self):
         self.main.displayDefaultFrame()
         self.itemFrame.deleteButton(self.json['account'] + "\n" + self.json['username'])
-        utilities.deleteFromJson(self.json['key'], "login")
+        self.database.deleteRecord("login", self.json["key"])
+        # utilities.deleteFromJson(self.json['key'], "login")
         self.main.updateItems(self.json['key'], "login")
 
     def copyUsernameToClipboard(self):

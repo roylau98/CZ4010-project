@@ -5,7 +5,7 @@ import utilities
 from datetime import datetime
 
 class vaultEditFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame):
+    def __init__(self, parent, main, json, itemFrame, database):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
@@ -13,6 +13,7 @@ class vaultEditFrame(tk.Frame):
         self.json = json
         self.main = main
         self.itemFrame = itemFrame
+        self.database = database
         self.oldKey = self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename']
 
         self.vaultLabelText = tk.StringVar()

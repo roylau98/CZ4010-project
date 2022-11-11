@@ -4,7 +4,7 @@ import utilities
 from datetime import datetime
 
 class notesEditFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame):
+    def __init__(self, parent, main, json, itemFrame, database):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(11, weight=1)
@@ -12,6 +12,7 @@ class notesEditFrame(tk.Frame):
         self.json = json
         self.main = main
         self.itemFrame = itemFrame
+        self.database = database
         self.oldKey = self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename']
 
         self.noteLabelText = tk.StringVar()

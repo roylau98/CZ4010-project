@@ -6,12 +6,13 @@ from tkinter import messagebox
 import uuid
 
 class passwordCreateFrame(tk.Frame):
-    def __init__(self, parent, main):
+    def __init__(self, parent, main, database):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(8, weight=1)
         self.columnconfigure(3, weight=1)
         self.main = main
+        self.database = database
 
         self.accountLabelText = tk.StringVar()
         self.accountLabelText.set("Account:")
@@ -39,15 +40,19 @@ class passwordCreateFrame(tk.Frame):
         self.saveButton.grid(row=6, column=0, sticky='w', padx=10, pady=5)
 
     def saveLogin(self):
+        #hardcoded iv
+        iv = "abc"
         json = {'account': self.accountEntry.get("1.0", "end-1c"),
                 'username': self.usernameEntry.get("1.0", "end-1c"),
                 'password': self.passwordEntry.get("1.0", "end-1c"),
                 'updated': datetime.now().strftime('%d %b %Y, %I:%M %p'),
+                "iv": iv,
                 'key': uuid.uuid4().hex
                 }
         if (json['account'] == "" or json['username'] == "" or json['password'] == ""):
             messagebox.showwarning(title="Missing information", message="Account/ Username/ Password is missing")
             return
-        utilities.updateJson(json['key'], json, "login")
+        self.database.insertRecord("login", json)
+        # utilities.updateJson(json['key'], json, "login")
         self.main.reRenderDetailsFrame(json, "login")
         self.main.changeItemsFrame("login", False)

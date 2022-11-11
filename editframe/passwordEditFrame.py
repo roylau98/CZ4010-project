@@ -5,7 +5,7 @@ import utilities
 from datetime import datetime
 
 class passwordEditFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame):
+    def __init__(self, parent, main, json, itemFrame, database):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.json = json
         self.parent = parent
@@ -13,6 +13,7 @@ class passwordEditFrame(tk.Frame):
         self.columnconfigure(3, weight=1)
         self.main = main
         self.itemFrame = itemFrame
+        self.database = database
         self.oldKey = self.json['account'] + "\n" + self.json['username']
 
         self.accountLabelText = tk.StringVar()
@@ -51,10 +52,16 @@ class passwordEditFrame(tk.Frame):
     def saveLogin(self):
         self.json['account'] = self.accountEntry.get().strip()
         self.json['username'] = self.usernameEntry.get().strip()
-        self.json['password'] = self.passwordEntry.get().strip()
+
+        # if password changed, re-encrypt password
+        if self.json["password"] != self.passwordEntry.get().strip():
+            self.json["iv"] = "abc"
+            self.json['password'] = self.passwordEntry.get().strip()
+
         currentDate = datetime.now()
         self.json['updated'] = currentDate.strftime('%d %b %Y, %I:%M %p')
-        utilities.updateJson(self.json['key'], self.json, "login")
+        self.database.updateRecord("login", self.json)
+        # utilities.updateJson(self.json['key'], self.json, "login")
         self.main.reRenderDetailsFrame(self.json, "login")
         self.itemFrame.updateItems(self.oldKey, self.json['account'] + "\n" + self.json['username'])
 
