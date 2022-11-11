@@ -45,7 +45,8 @@ class vaultEditFrame(tk.Frame):
         self.json['encryption'] = self.vaultEncryptionText.get("1.0", "end-1c").strip()
         currentDate = datetime.now()
         self.json['updated'] = currentDate.strftime('%d %b %Y, %I:%M %p')
-        utilities.updateJson(self.json['key'], self.json, "vault")
+        self.database.updateRecord("vault", self.json)
+        # utilities.updateJson(self.json['key'], self.json, "vault")
         self.main.reRenderDetailsFrame(self.json, "vault")
         self.itemFrame.updateItems(self.oldKey,
                                    self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])

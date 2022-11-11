@@ -20,16 +20,16 @@ class MainApplication(tk.Frame):
         super().__init__()
         self.database = DataBase("abc.db")
         self.credentials = self.database.fetchAllLogin()
+        self.vault = self.database.fetchAllVault()
+        self.notes = self.database.fetchAllNotes()
+        self.items = {"login": self.credentials,
+                      "notes": self.notes,
+                      "vault": self.vault}
 
-        with open('items.json', 'r') as f:
-            self.items = json.load(f)
-        self.vault = self.items['vault']
-        self.notes = self.items['notes']
         self.lastLogin = lastLogin
         self.firebase = firebase
         self.login = login
         self.vaultKey = vaultKey
-
 
         self.parent = parent
         self.rowconfigure(3, weight=1)

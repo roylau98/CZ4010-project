@@ -57,17 +57,20 @@ class notesCreateFrame(tk.Frame):
         self.saveButton.grid(row=10, column=0, sticky='w', padx=10, pady=5)
 
     def saveNote(self):
+        iv = "abc"
         json = {'title': self.noteTitleText.get("1.0", "end-1c"),
                 'filename': self.noteFilenameText.get("1.0", "end-1c"),
                 'encryption': self.noteEncryptionText.get("1.0", "end-1c"),
                 'path': self.noteLocationText.get("1.0", "end-1c"),
                 'updated': datetime.now().strftime('%d %b %Y, %I:%M %p'),
+                'iv': iv,
                 'key': uuid.uuid4().hex
                 }
         if (json['filename'] == "" or json['title'] == ""):
             messagebox.showwarning(title="Missing information", message="Filename/ Title is missing")
             return
         utilities.saveNote(self.noteBodyText.get("1.0", "end-1c"), json['path'], json['filename'])
-        utilities.updateJson(json['key'], json, "notes")
+        # utilities.updateJson(json['key'], json, "notes")
+        self.database.insertRecord("notes", json)
         self.main.reRenderDetailsFrame(json, "notes")
         self.main.changeItemsFrame("notes", False)

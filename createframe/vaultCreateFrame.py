@@ -51,20 +51,26 @@ class vaultCreateFrame(tk.Frame):
             messagebox.showwarning(title="Error", message="File does not exists.")
             return
 
+        if "\\" in path:
+            path = path.replace("\\", "/")
+
         path = path.rsplit("/", 1)
+        iv = "abc"
         json = {
             "title": self.vaultTitleText.get("1.0", "end-1c"),
             "filename": path[1],
             "encryption": self.vaultEncryptionText.get("1.0", "end-1c"),
             "path": "./vault",
             "updated": datetime.now().strftime('%d %b %Y, %I:%M %p'),
+            "iv": iv,
             "key": uuid.uuid4().hex
         }
         if (json['title'] == "" or json['filename'] == "" or json['path'] == ""):
             messagebox.showwarning(title="Missing information", message="Title/ Filename/ Path is missing")
             return
 
-        utilities.updateJson(json['key'], json, "vault")
+        self.database.insertRecord("vault", json)
+        # utilities.updateJson(json['key'], json, "vault")
         utilities.encryptFile("/".join(path))
         self.main.reRenderDetailsFrame(json, "vault")
         self.main.changeItemsFrame("vault", False)

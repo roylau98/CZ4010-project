@@ -21,7 +21,25 @@ class DataBase:
                      "updated TEXT," \
                      "iv TEXT," \
                      "uuid TEXT PRIMARY KEY);"
+        setupVault = "CREATE TABLE IF NOT EXISTS vault " \
+                     "(title TEXT," \
+                     "filename TEXT, " \
+                     "encryption TEXT, " \
+                     "path TEXT," \
+                     "iv TEXT," \
+                     "updated TEXT," \
+                     "uuid TEXT PRIMARY KEY);"
+        setupNotes = "CREATE TABLE IF NOT EXISTS notes " \
+                     "(title TEXT," \
+                     "filename TEXT, " \
+                     "encryption TEXT, " \
+                     "path TEXT," \
+                     "iv TEXT," \
+                     "updated TEXT," \
+                     "uuid TEXT PRIMARY KEY);"
         self.cursor.execute(setupLogin)
+        self.cursor.execute(setupVault)
+        self.cursor.execute(setupNotes)
         self.connection.commit()
 
     def fetchAllLogin(self):
@@ -39,6 +57,36 @@ class DataBase:
                           "key": i[5]}
         return dict
 
+    def fetchAllNotes(self):
+        command = "SELECT * FROM notes;"
+        self.cursor.execute(command)
+        data = self.cursor.fetchall()
+        dict = {}
+        for i in data:
+            dict[i[6]] = {"title": i[0],
+                          "filename": i[1],
+                          "encryption": i[2],
+                          "path": i[3],
+                          "iv": i[4],
+                          "updated": i[5],
+                          "key": i[6]}
+        return dict
+
+    def fetchAllVault(self):
+        command = "SELECT * FROM vault;"
+        self.cursor.execute(command)
+        data = self.cursor.fetchall()
+        dict = {}
+        for i in data:
+            dict[i[6]] = {"title": i[0],
+                          "filename": i[1],
+                          "encryption": i[2],
+                          "path": i[3],
+                          "iv": i[4],
+                          "updated": i[5],
+                          "key": i[6]}
+        return dict
+
     def deleteRecord(self, type, key):
         command = f"DELETE FROM {type} WHERE uuid = (?);"
         data = (key,)
@@ -46,9 +94,12 @@ class DataBase:
         self.connection.commit()
 
     def insertRecord(self, type, json):
-        command = f"INSERT INTO {type} VALUES(?, ?, ?, ?, ?, ?);"
         if type == "login":
+            command = f"INSERT INTO {type} VALUES(?, ?, ?, ?, ?, ?);"
             data = (json["account"], json["username"], json["password"], json["updated"], json["iv"], json["key"],)
+        else:
+            command = f"INSERT INTO {type} VALUES(?, ?, ?, ?, ?, ?, ?);"
+            data = (json["title"], json["filename"], json["encryption"], json["path"], json["iv"], json["updated"], json["key"],)
         self.cursor.execute(command, data)
         self.connection.commit()
 
@@ -58,5 +109,10 @@ class DataBase:
                       f"SET account = (?), username = (?), password = (?), updated = (?), iv = (?)" \
                       f"WHERE uuid = (?);"
             data = (json["account"], json["username"], json["password"], json["updated"], json["iv"], json["key"],)
+        else:
+            command = f"UPDATE {type} " \
+                      f"SET title = (?), filename = (?), encryption = (?), path = (?), iv = (?), updated = (?)" \
+                      f"WHERE uuid = (?);"
+            data = (json["title"], json["filename"], json["encryption"], json["path"], json["iv"], json["updated"], json["key"],)
         self.cursor.execute(command, data)
         self.connection.commit()

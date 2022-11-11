@@ -57,6 +57,7 @@ class notesEditFrame(tk.Frame):
         currentDate = datetime.now()
         self.json['updated'] = currentDate.strftime('%d %b %Y, %I:%M %p')
         utilities.saveNote(message, self.json['path'], self.json['filename'])
-        utilities.updateJson(self.json['key'], self.json, "notes")
+        self.database.updateRecord("notes", self.json)
+        # utilities.updateJson(self.json['key'], self.json, "notes")
         self.main.reRenderDetailsFrame(self.json, "notes")
         self.itemFrame.updateItems(self.oldKey, self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])
