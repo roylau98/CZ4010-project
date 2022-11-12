@@ -53,7 +53,7 @@ class loginFrame(tk.Frame):
         decryptionKey = utilities.KDF(email + password, password + username)
 
         config = configparser.ConfigParser()
-        config.read('config.ini')
+        config.read(f"./{username}/config.ini")
         salt = bytes.fromhex(config['CONFIGURATION']['salt'])
         iv = bytes.fromhex(config['CONFIGURATION']['iv'])
 
@@ -69,7 +69,7 @@ class loginFrame(tk.Frame):
 
         vaultKey = utilities.KDF(decryptionKey + password.encode() + salt, authKey + password.encode())
         self.destroy()
-        MainApplication(self.parent, self, auth, self.firebase, vaultKey).grid(sticky='nsew')
+        MainApplication(self.parent, self, auth, self.firebase, vaultKey, username).grid(sticky='nsew')
         return
 
     def registerUser(self):

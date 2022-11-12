@@ -6,7 +6,7 @@ from datetime import datetime
 import uuid
 
 class notesCreateFrame(tk.Frame):
-    def __init__(self, parent, main, database, vaultKey):
+    def __init__(self, parent, main, database, vaultKey, username):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(11, weight=1)
@@ -14,6 +14,7 @@ class notesCreateFrame(tk.Frame):
         self.main = main
         self.database = database
         self.vaultKey = vaultKey
+        self.username = username
 
         self.noteLabelText = tk.StringVar()
         self.noteLabelText.set("Title:")
@@ -26,13 +27,13 @@ class notesCreateFrame(tk.Frame):
         # self.noteEncryptionText = tk.Text(self, width=60, height=1)
         # self.noteEncryptionText.insert("end", "AES-256-CBC")
 
-        self.locationLabelText = tk.StringVar()
-        self.locationLabelText.set("Location:")
-        self.locationLabel = tk.Label(self, textvariable=self.locationLabelText)
-        self.noteLocation = tk.StringVar()
-        self.noteLocation.set("./notes")
-        self.noteLocationText = tk.Text(self, width=60, height=1)
-        self.noteLocationText.insert("1.0", self.noteLocation.get())
+        # self.locationLabelText = tk.StringVar()
+        # self.locationLabelText.set("Location:")
+        # self.locationLabel = tk.Label(self, textvariable=self.locationLabelText)
+        # self.noteLocation = tk.StringVar()
+        # self.noteLocation.set("./notes")
+        # self.noteLocationText = tk.Text(self, width=60, height=1)
+        # self.noteLocationText.insert("1.0", self.noteLocation.get())
 
         self.filenameLabelText = tk.StringVar()
         self.filenameLabelText.set("Filename:")
@@ -50,8 +51,8 @@ class notesCreateFrame(tk.Frame):
         self.noteTitleText.grid(row=1, column=0, sticky='w', padx=10)
         #self.encryptionLabel.grid(row=2, column=0, sticky='w', padx=10)
         #self.noteEncryptionText.grid(row=3, column=0, sticky='w', padx=10)
-        self.locationLabel.grid(row=4, column=0, sticky='w', padx=10)
-        self.noteLocationText.grid(row=5, column=0, sticky='w', padx=10)
+        #self.locationLabel.grid(row=4, column=0, sticky='w', padx=10)
+        #self.noteLocationText.grid(row=5, column=0, sticky='w', padx=10)
         self.filenameLabel.grid(row=6, column=0, sticky='w', padx=10)
         self.noteFilenameText.grid(row=7, column=0, sticky='w', padx=10)
         self.bodyLabel.grid(row=8, column=0, sticky='w', padx=10)
@@ -72,7 +73,7 @@ class notesCreateFrame(tk.Frame):
         json = {'title': noteTitle,
                 'filename': fileName,
                 'hash': hashed,
-                'path': self.noteLocationText.get("1.0", "end-1c"),
+                'path': f"./{self.username}/notes",
                 'updated': datetime.now().strftime('%d %b %Y, %I:%M %p'),
                 'iv': iv.hex(),
                 'key': uuid.uuid4().hex

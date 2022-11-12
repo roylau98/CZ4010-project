@@ -4,7 +4,8 @@ from tkinter import messagebox
 from util.firebase import Firebase
 from util import utilities
 import uuid
-
+from util.database import DataBase
+import os
 
 class registerFrame(tk.Frame):
     def __init__(self, parent, login):
@@ -54,6 +55,15 @@ class registerFrame(tk.Frame):
         email = self.register_email.get()
         password = self.register_pwd.get()
         username = self.register_username.get()
+        #creating folders
+        try:
+            os.mkdir(f"./{username}")
+            os.mkdir(f"./{username}/notes")
+            os.mkdir(f"./{username}/vault")
+        except Exception as e:
+            messagebox.showwarning(title="Error", message="Username taken, please choose another one.")
+            return
+
         salt = bytes(str(uuid.uuid4()), "utf-8")
 
         # (email | password) as plaintext, (password | username) as salt
@@ -66,8 +76,14 @@ class registerFrame(tk.Frame):
 
         config['CONFIGURATION'] = {'salt': encryptedSalt.hex(),
                                    'iv': iv.hex()}
-        with open('config.ini', 'w') as f:
+
+        with open(f"./{username}/config.ini", 'w') as f:
             config.write(f)
+
+        # creates the database
+        database = DataBase(f"./{username}/{username}.db")
+        database.setup()
+        database.closeConnection()
 
         firebaseDB = Firebase()
         firebaseDB.registerUser(authKey.hex())

@@ -6,7 +6,7 @@ class DataBase:
     def __init__(self, database):
         self.database = database
         self.connect()
-        self.setup()
+        # self.setup()
 
     def connect(self):
         self.connection = sqlite3.connect(self.database, check_same_thread=False)

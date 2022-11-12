@@ -16,14 +16,15 @@ import tkinter as tk
 
 
 class MainApplication(tk.Frame):
-    def __init__(self, parent, login, lastLogin, firebase, vaultKey):
+    def __init__(self, parent, login, lastLogin, firebase, vaultKey, username):
         super().__init__()
         self.lastLogin = lastLogin
         self.firebase = firebase
         self.login = login
         self.vaultKey = vaultKey
+        self.username = username
 
-        self.database = DataBase("abc.db")
+        self.database = DataBase(f"./{self.username}/{self.username}.db")
         self.credentials = self.database.fetchAllLogin(vaultKey)
         self.vault = self.database.fetchAllVault()
         self.notes = self.database.fetchAllNotes()
@@ -117,11 +118,11 @@ class MainApplication(tk.Frame):
     def changeCreateFrame(self, key):
         self.detailsFrame.destroy()
         if key == "notes":
-            self.detailsFrame = notesCreateFrame(self.parent, self, self.database, self.vaultKey)
+            self.detailsFrame = notesCreateFrame(self.parent, self, self.database, self.vaultKey, self.username)
         elif key == "login":
             self.detailsFrame = passwordCreateFrame(self.parent, self, self.database, self.vaultKey)
         elif key == "vault":
-            self.detailsFrame = vaultCreateFrame(self.parent, self, self.database, self.vaultKey)
+            self.detailsFrame = vaultCreateFrame(self.parent, self, self.database, self.vaultKey, self.username)
 
         self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
 
