@@ -20,11 +20,11 @@ class notesCreateFrame(tk.Frame):
         self.noteLabel = tk.Label(self, textvariable=self.noteLabelText)
         self.noteTitleText = tk.Text(self, width=60, height=1)
 
-        self.encryptionLabelText = tk.StringVar()
-        self.encryptionLabelText.set("Encryption:")
-        self.encryptionLabel = tk.Label(self, textvariable=self.encryptionLabelText)
-        self.noteEncryptionText = tk.Text(self, width=60, height=1)
-        self.noteEncryptionText.insert("end", "AES-256-CBC")
+        # self.encryptionLabelText = tk.StringVar()
+        # self.encryptionLabelText.set("Encryption:")
+        # self.encryptionLabel = tk.Label(self, textvariable=self.encryptionLabelText)
+        # self.noteEncryptionText = tk.Text(self, width=60, height=1)
+        # self.noteEncryptionText.insert("end", "AES-256-CBC")
 
         self.locationLabelText = tk.StringVar()
         self.locationLabelText.set("Location:")
@@ -48,8 +48,8 @@ class notesCreateFrame(tk.Frame):
 
         self.noteLabel.grid(row=0, column=0, sticky='w', padx=10)
         self.noteTitleText.grid(row=1, column=0, sticky='w', padx=10)
-        self.encryptionLabel.grid(row=2, column=0, sticky='w', padx=10)
-        self.noteEncryptionText.grid(row=3, column=0, sticky='w', padx=10)
+        #self.encryptionLabel.grid(row=2, column=0, sticky='w', padx=10)
+        #self.noteEncryptionText.grid(row=3, column=0, sticky='w', padx=10)
         self.locationLabel.grid(row=4, column=0, sticky='w', padx=10)
         self.noteLocationText.grid(row=5, column=0, sticky='w', padx=10)
         self.filenameLabel.grid(row=6, column=0, sticky='w', padx=10)
@@ -68,16 +68,17 @@ class notesCreateFrame(tk.Frame):
             return
 
         encryptedNote, iv = utilities.encrypt(self.vaultKey, bytes(notebody, "utf-8"))
+        hashed = utilities.hash(bytes(notebody, "utf-8"))
         json = {'title': noteTitle,
                 'filename': fileName,
-                'encryption': self.noteEncryptionText.get("1.0", "end-1c"),
+                'hash': hashed,
                 'path': self.noteLocationText.get("1.0", "end-1c"),
                 'updated': datetime.now().strftime('%d %b %Y, %I:%M %p'),
                 'iv': iv.hex(),
                 'key': uuid.uuid4().hex
                 }
         utilities.saveNote(encryptedNote, json['path'], json['filename'])
-        json["iv"] = bytes.fromhex(json["iv"])
         self.database.insertRecord("notes", json)
+        json["iv"] = bytes.fromhex(json["iv"])
         self.main.reRenderDetailsFrame(json, "notes")
         self.main.changeItemsFrame("notes", False)

@@ -25,7 +25,7 @@ class DataBase:
         setupVault = "CREATE TABLE IF NOT EXISTS vault " \
                      "(title TEXT," \
                      "filename TEXT, " \
-                     "encryption TEXT, " \
+                     "hash TEXT, " \
                      "path TEXT," \
                      "iv TEXT," \
                      "updated TEXT," \
@@ -33,7 +33,7 @@ class DataBase:
         setupNotes = "CREATE TABLE IF NOT EXISTS notes " \
                      "(title TEXT," \
                      "filename TEXT, " \
-                     "encryption TEXT, " \
+                     "hash TEXT, " \
                      "path TEXT," \
                      "iv TEXT," \
                      "updated TEXT," \
@@ -65,7 +65,7 @@ class DataBase:
         for i in data:
             dict[i[6]] = {"title": i[0],
                           "filename": i[1],
-                          "encryption": i[2],
+                          "hash": i[2],
                           "path": i[3],
                           "iv": bytes.fromhex(i[4]),
                           "updated": i[5],
@@ -80,7 +80,7 @@ class DataBase:
         for i in data:
             dict[i[6]] = {"title": i[0],
                           "filename": i[1],
-                          "encryption": i[2],
+                          "hash": i[2],
                           "path": i[3],
                           "iv": bytes.fromhex(i[4]),
                           "updated": i[5],
@@ -99,7 +99,7 @@ class DataBase:
             data = (json["account"], json["username"], json["password"], json["updated"], json["iv"], json["key"],)
         else:
             command = f"INSERT INTO {type} VALUES(?, ?, ?, ?, ?, ?, ?);"
-            data = (json["title"], json["filename"], json["encryption"], json["path"], json["iv"], json["updated"], json["key"],)
+            data = (json["title"], json["filename"], json["hash"], json["path"], json["iv"], json["updated"], json["key"],)
         self.cursor.execute(command, data)
         self.connection.commit()
 
@@ -111,8 +111,8 @@ class DataBase:
             data = (json["account"], json["username"], json["password"], json["updated"], json["iv"], json["key"],)
         else:
             command = f"UPDATE {type} " \
-                      f"SET title = (?), filename = (?), encryption = (?), path = (?), iv = (?), updated = (?)" \
+                      f"SET title = (?), filename = (?), hash = (?), path = (?), iv = (?), updated = (?)" \
                       f"WHERE uuid = (?);"
-            data = (json["title"], json["filename"], json["encryption"], json["path"], json["iv"], json["updated"], json["key"],)
+            data = (json["title"], json["filename"], json["hash"], json["path"], json["iv"], json["updated"], json["key"],)
         self.cursor.execute(command, data)
         self.connection.commit()

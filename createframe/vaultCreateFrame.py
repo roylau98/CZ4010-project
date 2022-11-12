@@ -19,11 +19,11 @@ class vaultCreateFrame(tk.Frame):
         self.vaultLabel = tk.Label(self, textvariable=self.vaultLabelText)
         self.vaultTitleText = tk.Text(self, width=60, height=1)
 
-        self.encryptionLabelText = tk.StringVar()
-        self.encryptionLabelText.set("Encryption:")
-        self.encryptionLabel = tk.Label(self, textvariable=self.encryptionLabelText)
-        self.vaultEncryptionText = tk.Text(self, width=60, height=1)
-        self.vaultEncryptionText.insert("end", "AES-256-CBC")
+        # self.encryptionLabelText = tk.StringVar()
+        # self.encryptionLabelText.set("Hash:")
+        # self.encryptionLabel = tk.Label(self, textvariable=self.encryptionLabelText)
+        # self.vaultEncryptionText = tk.Text(self, width=60, height=1)
+        # self.vaultEncryptionText.insert("end", "AES-256-CBC")
 
         self.filepathLabelText = tk.StringVar()
         self.filepathLabelText.set("File path:")
@@ -39,8 +39,8 @@ class vaultCreateFrame(tk.Frame):
 
         self.vaultLabel.grid(row=0, column=0, sticky='w', padx=10)
         self.vaultTitleText.grid(row=1, column=0, sticky='w', padx=10)
-        self.encryptionLabel.grid(row=2, column=0, sticky='w', padx=10)
-        self.vaultEncryptionText.grid(row=3, column=0, sticky='w', padx=10)
+        #self.encryptionLabel.grid(row=2, column=0, sticky='w', padx=10)
+        #self.vaultEncryptionText.grid(row=3, column=0, sticky='w', padx=10)
         self.filepathLabel.grid(row=4, column=0, sticky='w', padx=10)
         self.vaultFilepathText.grid(row=5, column=0, sticky='w', padx=10)
         #self.filenameLabel.grid(row=6, column=0, sticky='w', padx=10)
@@ -62,11 +62,11 @@ class vaultCreateFrame(tk.Frame):
             messagebox.showwarning(title="Missing information", message="Title/ Filename is missing")
             return
 
-        iv = utilities.encryptFile(self.vaultKey, "/".join(path))
+        iv, hash = utilities.encryptFile(self.vaultKey, "/".join(path), "./vault/" + path[1])
         json = {
             "title": vaultTitle,
             "filename": path[1],
-            "encryption": self.vaultEncryptionText.get("1.0", "end-1c"),
+            "hash": hash,
             "path": "./vault",
             "updated": datetime.now().strftime('%d %b %Y, %I:%M %p'),
             "iv": iv.hex(),

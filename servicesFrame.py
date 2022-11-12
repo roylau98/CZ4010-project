@@ -49,7 +49,7 @@ class servicesFrame(tk.Frame):
         self.main.changeItemsFrame(item)
 
     def createNew(self, key):
-        self.main.changeCreateFrame(key.strip())
+        self.main.changeCreateFrame(key.strip().lower())
 
     def logoutApp(self):
         self.main.logout()
