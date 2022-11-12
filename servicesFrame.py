@@ -22,9 +22,9 @@ class servicesFrame(tk.Frame):
             self.button[i].grid(row=i + 1, column=0, sticky='nsew', ipadx=80)
             i += 1
 
-        self.choices = ["                      login                    ",
-                        "                      vault                    ",
-                        "                      notes                    "]
+        self.choices = ["                      Login                    ",
+                        "                      Notes                    ",
+                        "                      Vault                    "]
         self.choice = tk.StringVar()
         self.choice.set(self.choices[0])
 

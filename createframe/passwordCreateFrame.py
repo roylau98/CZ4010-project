@@ -57,7 +57,6 @@ class passwordCreateFrame(tk.Frame):
                 "iv": iv.hex(),
                 'key': uuid.uuid4().hex
                 }
-        print(json)
         # save encrypted password
         self.database.insertRecord("login", json)
         # we still need to display unencrypted password

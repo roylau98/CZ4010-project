@@ -45,7 +45,7 @@ class notesDetailsFrame(tk.Frame):
         self.bodyLabel = tk.Label(self, textvariable=self.bodyLabelText)
         self.noteBody = tk.StringVar()
 
-        self.decrypted = utilities.decryptNote(self.json['encryption'], self.json['path'], self.json['filename'], self.vaultKey, bytes.fromhex(self.json["iv"]))
+        self.decrypted = utilities.decryptNote(self.json['encryption'], self.json['path'], self.json['filename'], self.vaultKey, self.json["iv"])
         if self.decrypted == None:
             messagebox.showwarning(title="Error", message="File missing")
             self.deleteNote()

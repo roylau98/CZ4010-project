@@ -77,7 +77,7 @@ class notesCreateFrame(tk.Frame):
                 'key': uuid.uuid4().hex
                 }
         utilities.saveNote(encryptedNote, json['path'], json['filename'])
-
+        json["iv"] = bytes.fromhex(json["iv"])
         self.database.insertRecord("notes", json)
         self.main.reRenderDetailsFrame(json, "notes")
         self.main.changeItemsFrame("notes", False)
