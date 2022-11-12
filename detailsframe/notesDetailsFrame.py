@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import scrolledtext
 from tkinter import messagebox
-import utilities
+from util import utilities
 import os
 
 class notesDetailsFrame(tk.Frame):

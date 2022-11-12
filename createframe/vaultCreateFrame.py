@@ -1,5 +1,5 @@
 import tkinter as tk
-import utilities
+from util import utilities
 import os
 import uuid
 from tkinter import messagebox

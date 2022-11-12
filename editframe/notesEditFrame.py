@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import scrolledtext
-import utilities
+from util import utilities
 from datetime import datetime
 import os
 

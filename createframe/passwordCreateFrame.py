@@ -1,6 +1,5 @@
 import tkinter as tk
-import time
-import utilities
+from util import utilities
 from datetime import datetime
 from tkinter import messagebox
 import uuid

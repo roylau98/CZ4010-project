@@ -1,5 +1,5 @@
 import tkinter as tk
-import utilities
+from util import utilities
 from tkinter import messagebox
 
 class vaultDetailsFrame(tk.Frame):
@@ -59,7 +59,7 @@ class vaultDetailsFrame(tk.Frame):
 
     def decryptVault(self):
         self.database.deleteRecord("vault", self.json["key"])
-        correctHash = utilities.decryptFile(self.vaultKey, self.json["path"]+"/"+self.json["filename"], bytes.fromhex(self.json["iv"]), self.json['hash'])
+        correctHash = utilities.decryptFile(self.vaultKey, self.json["path"] + "/" + self.json["filename"], bytes.fromhex(self.json["iv"]), self.json['hash'])
         if not correctHash:
             messagebox.showwarning(title="Warning", message="File possibly tampered. Hash does not match.")
 
@@ -71,7 +71,7 @@ class vaultDetailsFrame(tk.Frame):
         self.main.renderEditFrame("vault", self.json['key'])
 
     def deleteVault(self):
-        utilities.deleteItem(self.json['path']+"/"+self.json['filename'])
+        utilities.deleteItem(self.json['path'] + "/" + self.json['filename'])
         self.main.displayDefaultFrame()
         self.itemFrame.deleteButton(self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])
         utilities.deleteFromJson(self.json['key'], "vault")

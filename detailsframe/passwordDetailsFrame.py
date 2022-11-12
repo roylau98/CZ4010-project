@@ -1,9 +1,7 @@
 import threading
 import tkinter as tk
-import string
 import time
-import utilities
-from datetime import datetime
+
 
 class passwordDetailsFrame(tk.Frame):
     def __init__(self, parent, main, json, itemFrame, database, vaultKey):

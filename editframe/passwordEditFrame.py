@@ -1,7 +1,6 @@
 import threading
 import tkinter as tk
 import time
-import utilities
 from datetime import datetime
 
 class passwordEditFrame(tk.Frame):
