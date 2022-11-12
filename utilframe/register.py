@@ -93,5 +93,5 @@ class registerFrame(tk.Frame):
         # firebaseDB.getLoginDetails(salt.hex())
 
     def returnLogin(self):
-        self.grid_forget()
+        self.destroy()
         self.login.loginPage()

@@ -70,7 +70,7 @@ class loginFrame(tk.Frame):
         vaultKey = utilities.KDF(decryptionKey + password.encode() + salt, authKey + password.encode())
         self.destroy()
         MainApplication(self.parent, self, auth, self.firebase, vaultKey, username).grid(sticky='nsew')
-        return
+        return username
 
     def registerUser(self):
         registerFrame(self.parent, self).grid(row=1, column=1)

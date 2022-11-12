@@ -14,6 +14,12 @@ from createframe.vaultCreateFrame import vaultCreateFrame
 from util.database import DataBase
 import tkinter as tk
 
+global user
+global root
+def onClose():
+    # TODO: server authentication
+    print(user)
+    root.destroy()
 
 class MainApplication(tk.Frame):
     def __init__(self, parent, login, lastLogin, firebase, vaultKey, username):
@@ -23,6 +29,11 @@ class MainApplication(tk.Frame):
         self.login = login
         self.vaultKey = vaultKey
         self.username = username
+        global user
+        user = self.username
+        global root
+        root = parent
+
 
         self.database = DataBase(f"./{self.username}/{self.username}.db")
         self.credentials = self.database.fetchAllLogin(vaultKey)
@@ -47,6 +58,8 @@ class MainApplication(tk.Frame):
 
         self.passwordGenerator = passwordGeneratorFrame(self.parent)
         self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
+
+        parent.protocol("WM_DELETE_WINDOW", onClose)
 
     def renderEditFrame(self, type, key):
         self.detailsFrame.destroy()
