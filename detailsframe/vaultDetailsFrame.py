@@ -63,8 +63,8 @@ class vaultDetailsFrame(tk.Frame):
         if not correctHash:
             messagebox.showwarning(title="Warning", message="File possibly tampered. Hash does not match.")
 
-        self.main.displayDefaultFrame()
-        self.itemFrame.deleteButton(self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])
+        #self.main.displayDefaultFrame()
+        #self.itemFrame.deleteButton(self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])
         self.main.updateItems(self.json['key'], "vault")
 
     def editVault(self):
@@ -74,5 +74,6 @@ class vaultDetailsFrame(tk.Frame):
         utilities.deleteItem(self.json['path'] + "/" + self.json['filename'])
         self.main.displayDefaultFrame()
         self.itemFrame.deleteButton(self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])
-        utilities.deleteFromJson(self.json['key'], "vault")
+        self.database.deleteRecord("vault", self.json["key"])
+        # utilities.deleteFromJson(self.json['key'], "vault")
         self.main.updateItems(self.json['key'], "vault")

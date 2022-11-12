@@ -73,6 +73,7 @@ class MainApplication(tk.Frame):
             self.notes[json['key']] = json
             self.items["notes"][json['key']] = json
         self.changeDetailsFrame(json['key'])
+
     def updateItems(self, key, type):
         if type == "login":
             del self.credentials[key]
@@ -80,6 +81,8 @@ class MainApplication(tk.Frame):
             del self.vault[key]
         else:
             del self.notes[key]
+        self.changeItemsFrame(type)
+
     def displayDefaultFrame(self):
         self.detailsFrame.destroy()
         self.detailsFrame = defaultDetailsFrame(self.parent)
@@ -104,6 +107,7 @@ class MainApplication(tk.Frame):
         #self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
     def changeItemsFrame(self, key, default=True):
+        self.itemsFrame.destroyButtons()
         self.itemsFrame.destroy()
         self.itemsFrame = itemsFrame(self.parent, self, self.items[key])
         self.itemsFrame.grid(row=0, column=1, rowspan=3,sticky='nsew')
@@ -123,7 +127,7 @@ class MainApplication(tk.Frame):
 
         self.itemsFrame.destroy()
         self.changeItemsFrame(key, False)
-        self.itemsFrame.grid(row=0, column=1, rowspan=3, sticky='nsew')
+        # self.itemsFrame.grid(row=0, column=1, rowspan=3, sticky='nsew')
 
     def logout(self):
         self.detailsFrame.destroy()

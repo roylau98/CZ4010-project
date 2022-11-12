@@ -91,8 +91,6 @@ class passwordGeneratorFrame(tk.Frame):
         self.output.insert("end", password)
 
         background = threading.Thread(target=self.clearOutputBackground, daemon=True)
-        for thread in threading.enumerate():
-            print(thread.name)
         background.start()
         return password
 
@@ -114,14 +112,18 @@ class passwordGeneratorFrame(tk.Frame):
 
     def clearClipboard(self):
         time.sleep(10)
-        print("Cleared clipboard")
         self.parent.clipboard_clear()
         self.parent.clipboard_append('')
 
     def clearOutputBackground(self):
         time.sleep(10)
-        print("Cleared output")
-        self.output.delete(1.0, "end")
+        try:
+            self.output.delete(1.0, "end")
+        except Exception as e:
+            pass
 
     def clearOutput(self):
-        self.output.delete(1.0, "end")
+        try:
+            self.output.delete(1.0, "end")
+        except Exception as e:
+            pass

@@ -19,7 +19,8 @@ class itemsFrame(tk.Frame):
                     self.button[i].config(fg="red")
             elif "title" in items[key]:
                 self.button.append(
-                    tk.Button(self, text=items[key]['title'] + '\n' + items[key]['path'] + "/" + items[key]['filename'], command=lambda key=key: self.changeDetails(key), anchor='w'))
+                    tk.Button(self, text=items[key]['title'].strip() + '\n' + items[key]['path'].strip() + "/" +
+                                         items[key]['filename'].strip(), command=lambda key=key: self.changeDetails(key), anchor='w'))
             self.button[i].grid(row=i+1, column=0, sticky='nsew', ipadx=175)
             i += 1
 
@@ -38,3 +39,7 @@ class itemsFrame(tk.Frame):
             if self.button[i]['text'] == key:
                 break
         self.button[i].config(text=newKey.strip())
+
+    def destroyButtons(self):
+        for i in range(len(self.button)):
+            self.button[i].destroy()
