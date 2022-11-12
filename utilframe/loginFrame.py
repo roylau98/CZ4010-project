@@ -72,7 +72,6 @@ class loginFrame(tk.Frame):
         return
 
     def registerUser(self):
-        self.grid_forget()
         registerFrame(self.parent, self).grid(row=1, column=1)
 
     def loginPage(self):

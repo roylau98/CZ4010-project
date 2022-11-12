@@ -72,7 +72,7 @@ class registerFrame(tk.Frame):
         firebaseDB = Firebase()
         firebaseDB.registerUser(authKey.hex())
         messagebox.showinfo(title="Success", message="Successfully registered user!")
-        self.grid_forget()
+        self.destroy()
         self.login.loginPage()
         # firebaseDB.getLoginDetails(salt.hex())
 

@@ -48,6 +48,7 @@ class MainApplication(tk.Frame):
         self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
     def renderEditFrame(self, type, key):
+        self.detailsFrame.destroy()
         if type == "login":
             self.detailsFrame = passwordEditFrame(self.parent, self, self.credentials[key], self.itemsFrame, self.database, self.vaultKey)
             self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
@@ -61,6 +62,7 @@ class MainApplication(tk.Frame):
         #self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
 
     def reRenderDetailsFrame(self, json, type):
+        self.detailsFrame.destroy()
         if type == "login":
             self.credentials[json['key']] = json
             self.items["login"][json['key']] = json
