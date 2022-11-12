@@ -53,7 +53,7 @@ class DataBase:
                           "username": i[1],
                           "password": utilities.decrypt(vaultKey, bytes.fromhex(i[2]), bytes.fromhex(i[4])),
                           "updated": i[3],
-                          "iv": i[4],
+                          "iv": bytes.fromhex(i[4]),
                           "key": i[5]}
         return dict
 
@@ -67,7 +67,7 @@ class DataBase:
                           "filename": i[1],
                           "encryption": i[2],
                           "path": i[3],
-                          "iv": i[4],
+                          "iv": bytes.fromhex(i[4]),
                           "updated": i[5],
                           "key": i[6]}
         return dict
@@ -82,7 +82,7 @@ class DataBase:
                           "filename": i[1],
                           "encryption": i[2],
                           "path": i[3],
-                          "iv": i[4],
+                          "iv": bytes.fromhex(i[4]),
                           "updated": i[5],
                           "key": i[6]}
         return dict

@@ -5,6 +5,7 @@ import json
 import scrypt
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
+import base64
 
 def passwordGenerator(pool, length):
     password = ""
@@ -30,50 +31,49 @@ def check(password, pool):
 
     return check
 
-def decryptNote(encryption, path, filename):
-    with open(path+"/"+filename, 'r') as f:
-        encrypted = f.readlines()
+def decryptNote(encryption, path, filename, vaultKey, iv):
+    try:
+        with open(path+"/"+filename, 'rb') as f:
+            encrypted = f.readlines()
 
-    return encrypted[0]
+        decrypted = decrypt(vaultKey, b"".join(encrypted), iv)
+        return decrypted.decode("utf-8")
+    except Exception as e:
+        return None
 
 def saveNote(encryption, path, filename):
-    with open(path+"/"+filename, 'w') as f:
+    with open(path+"/"+filename, 'wb') as f:
         f.write(encryption)
 
-def deleteItem(path, filename):
+def deleteItem(path):
     try:
-        os.remove(path+"/"+filename)
+        os.remove(path)
     except OSError as e:
         print("Note does not exists.")
 
-def deleteFromJson(key, type):
-    with open('items.json', 'r') as f:
-        allItems = json.load(f)
+def encryptFile(key, path):
+    with open(path, 'rb') as f:
+        plaintext = f.readlines()
 
-    typeItems = allItems[type]
+    deleteItem(path)
+    encrypted, iv = encrypt(key, b"".join(plaintext))
 
-    del typeItems[key]
-    allItems[type] = typeItems
+    with open(path, 'wb') as f:
+        f.write(encrypted)
+    return iv
 
-    with open('items.json', 'w', encoding='utf-8') as f:
-        json.dump(allItems, f, ensure_ascii=False, indent=4)
+def decryptFile(key, path, iv):
+    with open(path, 'rb') as f:
+        encrypted = f.readlines()
 
-def updateJson(key, updated, type):
-    with open('items.json', 'r') as f:
-        allItems = json.load(f)
+    decrypted = decrypt(key, b"".join(encrypted), iv)
 
-    typeItems = allItems[type]
-    typeItems[key] = updated
-    allItems[type] = typeItems
-
-    with open('items.json', 'w', encoding='utf-8') as f:
-        json.dump(allItems, f, ensure_ascii=False, indent=4)
-
-def encryptFile(path):
-    print(path)
+    with open(path, 'wb') as f:
+        f.write(decrypted)
 
 def KDF(string, salt):
-    key = scrypt.hash(string, salt, 524288, 8, 1, 32)
+    # key = scrypt.hash(string, salt, 524288, 8, 1, 32)
+    key = scrypt.hash(string, salt, 128, 8, 1, 32)
     return key
 
 def encrypt(key, message):

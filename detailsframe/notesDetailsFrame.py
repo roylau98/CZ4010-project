@@ -1,9 +1,11 @@
 import tkinter as tk
 from tkinter import scrolledtext
+from tkinter import messagebox
 import utilities
+import os
 
 class notesDetailsFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame, database):
+    def __init__(self, parent, main, json, itemFrame, database, vaultKey):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
@@ -12,6 +14,7 @@ class notesDetailsFrame(tk.Frame):
         self.main = main
         self.itemFrame = itemFrame
         self.database = database
+        self.vaultKey = vaultKey
 
         self.noteLabelText = tk.StringVar()
         self.noteLabelText.set("Title:")
@@ -41,7 +44,13 @@ class notesDetailsFrame(tk.Frame):
         self.bodyLabelText.set("Body:")
         self.bodyLabel = tk.Label(self, textvariable=self.bodyLabelText)
         self.noteBody = tk.StringVar()
-        self.decrypted = utilities.decryptNote(self.json['encryption'], self.json['path'], self.json['filename'])
+
+        self.decrypted = utilities.decryptNote(self.json['encryption'], self.json['path'], self.json['filename'], self.vaultKey, bytes.fromhex(self.json["iv"]))
+        if self.decrypted == None:
+            messagebox.showwarning(title="Error", message="File missing")
+            self.deleteNote()
+            return
+
         self.noteBody.set(self.decrypted)
         self.noteBodyText = scrolledtext.ScrolledText(self, width=60, height=18)
         self.noteBodyText.insert("end", self.noteBody.get())
@@ -69,8 +78,7 @@ class notesDetailsFrame(tk.Frame):
         self.main.renderEditFrame("notes", self.json['key'])
 
     def deleteNote(self):
-        utilities.deleteItem(self.json['path'], self.json['filename'])
+        self.database.deleteRecord("notes", self.json["key"])
         self.main.displayDefaultFrame()
         self.itemFrame.deleteButton(self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])
-        utilities.deleteFromJson(self.json['key'], "notes")
         self.main.updateItems(self.json['key'], "notes")

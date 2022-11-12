@@ -49,13 +49,13 @@ class MainApplication(tk.Frame):
 
     def renderEditFrame(self, type, key):
         if type == "login":
-            self.detailsFrame = passwordEditFrame(self.parent, self, self.credentials[key], self.itemsFrame, self.database)
+            self.detailsFrame = passwordEditFrame(self.parent, self, self.credentials[key], self.itemsFrame, self.database, self.vaultKey)
             self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
         elif type == "vault":
             self.detailsFrame = vaultEditFrame(self.parent, self, self.vault[key], self.itemsFrame, self.database)
             self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
         else:
-            self.detailsFrame = notesEditFrame(self.parent, self, self.notes[key], self.itemsFrame, self.database)
+            self.detailsFrame = notesEditFrame(self.parent, self, self.notes[key], self.itemsFrame, self.database, self.vaultKey)
             self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
         #self.passwordGenerator = passwordGeneratorFrame(self.parent)
         #self.passwordGenerator.grid(row=2, column=2, columnspan=3, sticky='nsew')
@@ -90,11 +90,11 @@ class MainApplication(tk.Frame):
     def changeDetailsFrame(self, key):
         self.detailsFrame.destroy()
         if key in self.credentials:
-            self.detailsFrame = passwordDetailsFrame(self.parent, self, self.credentials[key], self.itemsFrame, self.database)
+            self.detailsFrame = passwordDetailsFrame(self.parent, self, self.credentials[key], self.itemsFrame, self.database, self.vaultKey)
         elif key in self.vault:
-            self.detailsFrame = vaultDetailsFrame(self.parent, self, self.vault[key], self.itemsFrame, self.database)
+            self.detailsFrame = vaultDetailsFrame(self.parent, self, self.vault[key], self.itemsFrame, self.database, self.vaultKey)
         else:
-            self.detailsFrame = notesDetailsFrame(self.parent, self, self.notes[key], self.itemsFrame, self.database)
+            self.detailsFrame = notesDetailsFrame(self.parent, self, self.notes[key], self.itemsFrame, self.database, self.vaultKey)
         self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
 
         #self.passwordGenerator.destroy()
@@ -111,11 +111,11 @@ class MainApplication(tk.Frame):
     def changeCreateFrame(self, key):
         self.detailsFrame.destroy()
         if key == "notes":
-            self.detailsFrame = notesCreateFrame(self.parent, self, self.database)
+            self.detailsFrame = notesCreateFrame(self.parent, self, self.database, self.vaultKey)
         elif key == "login":
             self.detailsFrame = passwordCreateFrame(self.parent, self, self.database, self.vaultKey)
         elif key == "vault":
-            self.detailsFrame = vaultCreateFrame(self.parent, self, self.database)
+            self.detailsFrame = vaultCreateFrame(self.parent, self, self.database, self.vaultKey)
 
         self.detailsFrame.grid(row=0, column=2, rowspan=2, columnspan=3, sticky='nsew')
 

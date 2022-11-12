@@ -6,7 +6,7 @@ import utilities
 from datetime import datetime
 
 class passwordDetailsFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame, database):
+    def __init__(self, parent, main, json, itemFrame, database, vaultKey):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.json = json
         self.parent = parent
@@ -15,6 +15,7 @@ class passwordDetailsFrame(tk.Frame):
         self.main = main
         self.itemFrame = itemFrame
         self.database = database
+        self.vaultKey = vaultKey
 
         self.accountLabelText = tk.StringVar()
         self.accountLabelText.set("Account:")
@@ -35,7 +36,8 @@ class passwordDetailsFrame(tk.Frame):
         self.passwordLabelText.set("Password:")
         self.passwordLabel = tk.Label(self, textvariable=self.passwordLabelText)
         self.passwordEntryText = tk.StringVar()
-        self.passwordEntryText.set(self.json['password'][:6])
+
+        self.passwordEntryText.set(self.json["password"][:6])
         self.passwordEntry = tk.Entry(self, text=self.passwordEntryText, width=60, show="*")
         self.passwordCopyButton = tk.Button(self, text="Copy", command=self.copyToClipboard)
         self.passwordViewButton = tk.Button(self, text="View", command=self.unhidePassword)

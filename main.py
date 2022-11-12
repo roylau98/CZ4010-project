@@ -1,6 +1,5 @@
 import tkinter as tk
 import json
-from functools import partial
 from mainApplication import MainApplication
 from register import registerFrame
 import utilities
@@ -61,6 +60,7 @@ class loginFrame(tk.Frame):
         iv = bytes.fromhex(config['CONFIGURATION']['iv'])
 
         # decrypt user uuid
+        salt = utilities.decrypt(decryptionKey, salt, iv)
 
         # (decryption Key | uuid) as plaintext, (salt | email) as salt
         authKey = utilities.KDF(decryptionKey+salt, salt+email.encode())

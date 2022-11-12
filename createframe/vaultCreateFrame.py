@@ -5,13 +5,14 @@ import uuid
 from tkinter import messagebox
 from datetime import datetime
 class vaultCreateFrame(tk.Frame):
-    def __init__(self, parent, main, database):
+    def __init__(self, parent, main, database, vaultKey):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
         self.columnconfigure(3, weight=1)
         self.main = main
         self.database = database
+        self.vaultKey = vaultKey
 
         self.vaultLabelText = tk.StringVar()
         self.vaultLabelText.set("Title:")
@@ -22,6 +23,7 @@ class vaultCreateFrame(tk.Frame):
         self.encryptionLabelText.set("Encryption:")
         self.encryptionLabel = tk.Label(self, textvariable=self.encryptionLabelText)
         self.vaultEncryptionText = tk.Text(self, width=60, height=1)
+        self.vaultEncryptionText.insert("end", "AES-256-CBC")
 
         self.filepathLabelText = tk.StringVar()
         self.filepathLabelText.set("File path:")
@@ -53,24 +55,24 @@ class vaultCreateFrame(tk.Frame):
 
         if "\\" in path:
             path = path.replace("\\", "/")
-
         path = path.rsplit("/", 1)
-        iv = "abc"
+
+        vaultTitle = self.vaultTitleText.get("1.0", "end-1c")
+        if (vaultTitle == "" or path[1] == ""):
+            messagebox.showwarning(title="Missing information", message="Title/ Filename is missing")
+            return
+
+        iv = utilities.encryptFile(self.vaultKey, "/".join(path))
         json = {
-            "title": self.vaultTitleText.get("1.0", "end-1c"),
+            "title": vaultTitle,
             "filename": path[1],
             "encryption": self.vaultEncryptionText.get("1.0", "end-1c"),
             "path": "./vault",
             "updated": datetime.now().strftime('%d %b %Y, %I:%M %p'),
-            "iv": iv,
+            "iv": iv.hex(),
             "key": uuid.uuid4().hex
         }
-        if (json['title'] == "" or json['filename'] == "" or json['path'] == ""):
-            messagebox.showwarning(title="Missing information", message="Title/ Filename/ Path is missing")
-            return
 
         self.database.insertRecord("vault", json)
-        # utilities.updateJson(json['key'], json, "vault")
-        utilities.encryptFile("/".join(path))
         self.main.reRenderDetailsFrame(json, "vault")
         self.main.changeItemsFrame("vault", False)

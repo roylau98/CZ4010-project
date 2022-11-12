@@ -6,13 +6,14 @@ from datetime import datetime
 import uuid
 
 class notesCreateFrame(tk.Frame):
-    def __init__(self, parent, main, database):
+    def __init__(self, parent, main, database, vaultKey):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(11, weight=1)
         self.columnconfigure(2, weight=1)
         self.main = main
         self.database = database
+        self.vaultKey = vaultKey
 
         self.noteLabelText = tk.StringVar()
         self.noteLabelText.set("Title:")
@@ -23,6 +24,7 @@ class notesCreateFrame(tk.Frame):
         self.encryptionLabelText.set("Encryption:")
         self.encryptionLabel = tk.Label(self, textvariable=self.encryptionLabelText)
         self.noteEncryptionText = tk.Text(self, width=60, height=1)
+        self.noteEncryptionText.insert("end", "AES-256-CBC")
 
         self.locationLabelText = tk.StringVar()
         self.locationLabelText.set("Location:")
@@ -57,20 +59,25 @@ class notesCreateFrame(tk.Frame):
         self.saveButton.grid(row=10, column=0, sticky='w', padx=10, pady=5)
 
     def saveNote(self):
-        iv = "abc"
-        json = {'title': self.noteTitleText.get("1.0", "end-1c"),
-                'filename': self.noteFilenameText.get("1.0", "end-1c"),
+        noteTitle = self.noteTitleText.get("1.0", "end-1c")
+        fileName = self.noteFilenameText.get("1.0", "end-1c")
+        notebody = self.noteBodyText.get("1.0", "end-1c")
+
+        if (noteTitle == "" or fileName == "" or notebody == ""):
+            messagebox.showwarning(title="Missing information", message="Filename/ Title/ Note is missing")
+            return
+
+        encryptedNote, iv = utilities.encrypt(self.vaultKey, bytes(notebody, "utf-8"))
+        json = {'title': noteTitle,
+                'filename': fileName,
                 'encryption': self.noteEncryptionText.get("1.0", "end-1c"),
                 'path': self.noteLocationText.get("1.0", "end-1c"),
                 'updated': datetime.now().strftime('%d %b %Y, %I:%M %p'),
-                'iv': iv,
+                'iv': iv.hex(),
                 'key': uuid.uuid4().hex
                 }
-        if (json['filename'] == "" or json['title'] == ""):
-            messagebox.showwarning(title="Missing information", message="Filename/ Title is missing")
-            return
-        utilities.saveNote(self.noteBodyText.get("1.0", "end-1c"), json['path'], json['filename'])
-        # utilities.updateJson(json['key'], json, "notes")
+        utilities.saveNote(encryptedNote, json['path'], json['filename'])
+
         self.database.insertRecord("notes", json)
         self.main.reRenderDetailsFrame(json, "notes")
         self.main.changeItemsFrame("notes", False)

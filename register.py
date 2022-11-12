@@ -56,13 +56,14 @@ class registerFrame(tk.Frame):
         email = self.register_email.get()
         password = self.register_pwd.get()
         username = self.register_username.get()
-        salt = os.urandom(16)
+        salt = bytes(str(uuid.uuid4()), "utf-8")
 
         # (email | password) as plaintext, (password | username) as salt
         encryptionKey = utilities.KDF(email+password, password+username)
         authKey = utilities.KDF(encryptionKey+salt, salt+email.encode())
 
-        encryptedSalt, iv = utilities.encryptAESGCM(encryptionKey, salt)
+        # save encrypted "salt"
+        encryptedSalt, iv = utilities.encrypt(encryptionKey, salt)
         config = configparser.ConfigParser()
 
         config['CONFIGURATION'] = {'salt': encryptedSalt.hex(),

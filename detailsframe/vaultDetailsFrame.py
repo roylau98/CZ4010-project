@@ -3,7 +3,7 @@ import utilities
 
 
 class vaultDetailsFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame, database):
+    def __init__(self, parent, main, json, itemFrame, database, vaultKey):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
@@ -12,6 +12,7 @@ class vaultDetailsFrame(tk.Frame):
         self.main = main
         self.itemFrame = itemFrame
         self.database = database
+        self.vaultKey = vaultKey
 
         self.vaultLabelText = tk.StringVar()
         self.vaultLabelText.set("Title:")
@@ -55,13 +56,19 @@ class vaultDetailsFrame(tk.Frame):
         self.editButton.grid(row=8, column=1, sticky='w', padx=10, pady=5)
         self.deleteButton.grid(row=8, column=2, sticky='e', padx=10, pady=5)
         self.dateUpdated.grid(row=9, column=0, sticky='w', padx=10)
+
     def decryptVault(self):
-        pass
+        self.database.deleteRecord("vault", self.json["key"])
+        utilities.decryptFile(self.vaultKey, self.json["path"]+"/"+self.json["filename"], bytes.fromhex(self.json["iv"]))
+        self.main.displayDefaultFrame()
+        self.itemFrame.deleteButton(self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])
+        self.main.updateItems(self.json['key'], "vault")
+
     def editVault(self):
         self.main.renderEditFrame("vault", self.json['key'])
 
     def deleteVault(self):
-        utilities.deleteItem(self.json['path'], self.json['filename'])
+        utilities.deleteItem(self.json['path']+"/"+self.json['filename'])
         self.main.displayDefaultFrame()
         self.itemFrame.deleteButton(self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])
         utilities.deleteFromJson(self.json['key'], "vault")
