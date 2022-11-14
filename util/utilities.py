@@ -62,8 +62,6 @@ def encryptFile(key, path, savelocation):
     return iv, hashedFile
 
 def decryptFile(key, path, iv, hashFile):
-    print(path)
-    print(iv)
     with open(path, 'rb') as f:
         encrypted = f.readlines()
 

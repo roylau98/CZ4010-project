@@ -80,6 +80,5 @@ class vaultCreateFrame(tk.Frame):
         self.database.insertRecord("vault", json)
         # store iv as bytes
         json["iv"] = base64.b64decode(json["iv"])
-        print(json["iv"])
         self.main.reRenderDetailsFrame(json, "vault")
         self.main.changeItemsFrame("vault", False)

@@ -1,3 +1,4 @@
+import base64
 import tkinter as tk
 import configparser
 from tkinter import messagebox
@@ -6,6 +7,8 @@ from util import utilities
 import uuid
 from util.database import DataBase
 import os
+import requests
+from datetime import datetime
 
 class registerFrame(tk.Frame):
     def __init__(self, parent, login):
@@ -74,8 +77,8 @@ class registerFrame(tk.Frame):
         encryptedSalt, iv = utilities.encrypt(encryptionKey, salt)
         config = configparser.ConfigParser()
 
-        config['CONFIGURATION'] = {'salt': encryptedSalt.hex(),
-                                   'iv': iv.hex()}
+        config['CONFIGURATION'] = {'salt': base64.encodebytes(encryptedSalt).decode("utf-8"),
+                                   'iv': base64.encodebytes(iv).decode("utf-8")}
 
         with open(f"./{username}/config.ini", 'w') as f:
             config.write(f)
@@ -85,9 +88,23 @@ class registerFrame(tk.Frame):
         database.setup()
         database.closeConnection()
 
+        with open(f"./{username}/{username}.db", "rb") as f:
+            binary = f.readlines()
+            binary = b"".join(binary)
+
+        url = "http://localhost:5000/register"
+        params = {
+            "auth": authKey.hex(),
+            "lastLogin": datetime.now().strftime('%d %b %Y, %I:%M %p'),
+            "filehash": utilities.hash(binary)
+        }
+        response = requests.post(url, json=params, headers={'content-type': 'application/json'})
         firebaseDB = Firebase()
         firebaseDB.registerUser(authKey.hex())
-        messagebox.showinfo(title="Success", message="Successfully registered user!")
+        if response.status_code == 200:
+            messagebox.showinfo(title="Success", message="Successfully registered user!")
+        else:
+            messagebox.showwarning(title="Error", message="Unable to register user!")
         self.destroy()
         self.login.loginPage()
         # firebaseDB.getLoginDetails(salt.hex())

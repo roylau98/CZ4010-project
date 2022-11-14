@@ -22,10 +22,10 @@ def onClose():
     root.destroy()
 
 class MainApplication(tk.Frame):
-    def __init__(self, parent, login, lastLogin, firebase, vaultKey, username):
+    def __init__(self, parent, login, lastLogin, vaultKey, username):
         super().__init__()
         self.lastLogin = lastLogin
-        self.firebase = firebase
+        # self.firebase = firebase
         self.login = login
         self.vaultKey = vaultKey
         self.username = username

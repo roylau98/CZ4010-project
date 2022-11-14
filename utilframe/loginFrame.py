@@ -1,10 +1,13 @@
+import base64
 import tkinter as tk
 from utilframe.mainApplication import MainApplication
 from utilframe.register import registerFrame
 from util import utilities
-from util.firebase import Firebase
+# from util.firebase import Firebase
 import configparser
 from tkinter import messagebox
+import requests
+import os
 
 class loginFrame(tk.Frame):
     def __init__(self, parent):
@@ -48,29 +51,38 @@ class loginFrame(tk.Frame):
         if (username == "" or email == "" or password == ""):
             messagebox.showwarning(title="Error", message="Missing fields!")
             return
-
-        # (email | password) as plaintext, (password | username) as salt
-        decryptionKey = utilities.KDF(email + password, password + username)
-
-        config = configparser.ConfigParser()
-        config.read(f"./{username}/config.ini")
-        salt = bytes.fromhex(config['CONFIGURATION']['salt'])
-        iv = bytes.fromhex(config['CONFIGURATION']['iv'])
-
-        # decrypt user uuid
-        salt = utilities.decrypt(decryptionKey, salt, iv)
-
-        # (decryption Key | uuid) as plaintext, (salt | email) as salt
-        authKey = utilities.KDF(decryptionKey + salt, salt + email.encode())
-        auth = self.firebase.authenticate(authKey.hex())
-        if auth == None:
-            messagebox.showwarning(title="Error", message="Wrong email/password!")
+        if not (os.path.exists(os.path.join(os.getcwd(), f'{username}'))):
+            messagebox.showwarning(title="Error", message="No such user on this machine.")
             return
 
-        vaultKey = utilities.KDF(decryptionKey + password.encode() + salt, authKey + password.encode())
-        self.destroy()
-        MainApplication(self.parent, self, auth, self.firebase, vaultKey, username).grid(sticky='nsew')
-        return username
+        try:
+            # (email | password) as plaintext, (password | username) as salt
+            decryptionKey = utilities.KDF(email + password, password + username)
+
+            config = configparser.ConfigParser()
+            config.read(f"./{username}/config.ini")
+            salt = base64.b64decode(config['CONFIGURATION']['salt'])
+            iv = base64.b64decode(config['CONFIGURATION']['iv'])
+
+            # decrypt user uuid
+            salt = utilities.decrypt(decryptionKey, salt, iv)
+
+            # (decryption Key | uuid) as plaintext, (salt | email) as salt
+            authKey = utilities.KDF(decryptionKey + salt, salt + email.encode())
+            # auth = self.firebase.authenticate(authKey.hex())
+            url = "http://localhost:5000/"
+            response = requests.get(url + authKey.hex())
+            if response == None:
+                messagebox.showwarning(title="Error", message="Wrong username/ email/ password!")
+                self.loginPage()
+
+            data = response.json()
+            vaultKey = utilities.KDF(decryptionKey + password.encode() + salt, authKey + password.encode())
+            self.destroy()
+            MainApplication(self.parent, self, data["lastLogin"], vaultKey, username).grid(sticky='nsew')
+            return username
+        except Exception as e:
+            messagebox.showwarning(title="Error", message="Wrong username/ email/ password!")
 
     def registerUser(self):
         registerFrame(self.parent, self).grid(row=1, column=1)
