@@ -13,16 +13,32 @@ from createframe.passwordCreateFrame import passwordCreateFrame
 from createframe.vaultCreateFrame import vaultCreateFrame
 from util.database import DataBase
 import tkinter as tk
+from util import utilities
+from datetime import datetime
+import requests
 
 global user
+global authKey
 global root
 def onClose():
-    # TODO: server authentication
-    print(user)
+    # TODO: RSA
+    url = "http://localhost:5000/update/"
+    with open(f"./{user}/{user}.db", "rb") as f:
+        binary = f.readlines()
+        binary = b"".join(binary)
+
+    filehash = utilities.hash(binary)
+
+    params = {
+        "auth": authKey,
+        "lastLogin": datetime.now().strftime('%d %b %Y, %I:%M %p'),
+        "filehash": utilities.hash(binary)
+    }
+    response = requests.post(url, json=params, headers={'content-type': 'application/json'})
     root.destroy()
 
 class MainApplication(tk.Frame):
-    def __init__(self, parent, login, lastLogin, vaultKey, username):
+    def __init__(self, parent, login, lastLogin, vaultKey, username, auth):
         super().__init__()
         self.lastLogin = lastLogin
         # self.firebase = firebase
@@ -33,7 +49,8 @@ class MainApplication(tk.Frame):
         user = self.username
         global root
         root = parent
-
+        global authKey
+        authKey = auth
 
         self.database = DataBase(f"./{self.username}/{self.username}.db")
         self.credentials = self.database.fetchAllLogin(vaultKey)

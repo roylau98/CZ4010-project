@@ -13,7 +13,7 @@ class loginFrame(tk.Frame):
     def __init__(self, parent):
         super().__init__()
         self.parent = parent
-        self.firebase = Firebase()
+        # self.firebase = Firebase()
 
         # username label and text entry box
         self.usernameLabel = tk.Label(self, text="Username: ")
@@ -54,35 +54,75 @@ class loginFrame(tk.Frame):
         if not (os.path.exists(os.path.join(os.getcwd(), f'{username}'))):
             messagebox.showwarning(title="Error", message="No such user on this machine.")
             return
+        # try:
+        #     # (email | password) as plaintext, (password | username) as salt
+        #     decryptionKey = utilities.KDF(email + password, password + username)
+        #
+        #     config = configparser.ConfigParser()
+        #     config.read(f"./{username}/config.ini")
+        #     salt = base64.b64decode(config['CONFIGURATION']['salt'])
+        #     iv = base64.b64decode(config['CONFIGURATION']['iv'])
+        #
+        #     # decrypt user uuid
+        #     salt = utilities.decrypt(decryptionKey, salt, iv)
+        #
+        #     # (decryption Key | uuid) as plaintext, (salt | email) as salt
+        #     authKey = utilities.KDF(decryptionKey + salt, salt + email.encode())
+        #     # auth = self.firebase.authenticate(authKey.hex())
+        #     url = "http://localhost:5000/"
+        #     response = requests.get(url + authKey.hex())
+        #     if response == None:
+        #         messagebox.showwarning(title="Error", message="Wrong username/ email/ password!")
+        #         self.loginPage()
+        #
+        #     data = response.json()
+        #     with open(f"./{username}/{username}.db", "rb") as f:
+        #         binary = f.readlines()
+        #         binary = b"".join(binary)
+        #
+        #     filehash = utilities.hash(binary)
+        #     if filehash != data["hash"]:
+        #         messagebox.showwarning(title="Error", message="Database possibly tampered.")
+        #
+        #     vaultKey = utilities.KDF(decryptionKey + password.encode() + salt, authKey + password.encode())
+        #     self.destroy()
+        #     MainApplication(self.parent, self, data["lastLogin"], vaultKey, username).grid(sticky='nsew')
+        #     return username
+        # except Exception as e:
+        #     messagebox.showwarning(title="Error", message="Wrong username/ email/ password!")
+        # (email | password) as plaintext, (password | username) as salt
+        decryptionKey = utilities.KDF(email + password, password + username)
 
-        try:
-            # (email | password) as plaintext, (password | username) as salt
-            decryptionKey = utilities.KDF(email + password, password + username)
+        config = configparser.ConfigParser()
+        config.read(f"./{username}/config.ini")
+        salt = base64.b64decode(config['CONFIGURATION']['salt'])
+        iv = base64.b64decode(config['CONFIGURATION']['iv'])
 
-            config = configparser.ConfigParser()
-            config.read(f"./{username}/config.ini")
-            salt = base64.b64decode(config['CONFIGURATION']['salt'])
-            iv = base64.b64decode(config['CONFIGURATION']['iv'])
+        # decrypt user uuid
+        salt = utilities.decrypt(decryptionKey, salt, iv)
 
-            # decrypt user uuid
-            salt = utilities.decrypt(decryptionKey, salt, iv)
-
-            # (decryption Key | uuid) as plaintext, (salt | email) as salt
-            authKey = utilities.KDF(decryptionKey + salt, salt + email.encode())
-            # auth = self.firebase.authenticate(authKey.hex())
-            url = "http://localhost:5000/"
-            response = requests.get(url + authKey.hex())
-            if response == None:
-                messagebox.showwarning(title="Error", message="Wrong username/ email/ password!")
-                self.loginPage()
-
-            data = response.json()
-            vaultKey = utilities.KDF(decryptionKey + password.encode() + salt, authKey + password.encode())
-            self.destroy()
-            MainApplication(self.parent, self, data["lastLogin"], vaultKey, username).grid(sticky='nsew')
-            return username
-        except Exception as e:
+        # (decryption Key | uuid) as plaintext, (salt | email) as salt
+        authKey = utilities.KDF(decryptionKey + salt, salt + email.encode())
+        # auth = self.firebase.authenticate(authKey.hex())
+        url = "http://localhost:5000/"
+        response = requests.get(url + authKey.hex())
+        if response == None:
             messagebox.showwarning(title="Error", message="Wrong username/ email/ password!")
+            self.loginPage()
+
+        data = response.json()
+        with open(f"./{username}/{username}.db", "rb") as f:
+            binary = f.readlines()
+            binary = b"".join(binary)
+
+        filehash = utilities.hash(binary)
+        if filehash != data["hash"]:
+            messagebox.showwarning(title="Error", message="Database possibly tampered.")
+
+        vaultKey = utilities.KDF(decryptionKey + password.encode() + salt, authKey + password.encode())
+        self.destroy()
+        MainApplication(self.parent, self, data["lastLogin"], vaultKey, username, data["auth"]).grid(sticky='nsew')
+        return username
 
     def registerUser(self):
         registerFrame(self.parent, self).grid(row=1, column=1)

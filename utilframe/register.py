@@ -2,7 +2,7 @@ import base64
 import tkinter as tk
 import configparser
 from tkinter import messagebox
-from util.firebase import Firebase
+#from util.firebase import Firebase
 from util import utilities
 import uuid
 from util.database import DataBase
@@ -99,8 +99,8 @@ class registerFrame(tk.Frame):
             "filehash": utilities.hash(binary)
         }
         response = requests.post(url, json=params, headers={'content-type': 'application/json'})
-        firebaseDB = Firebase()
-        firebaseDB.registerUser(authKey.hex())
+        #firebaseDB = Firebase()
+        #firebaseDB.registerUser(authKey.hex())
         if response.status_code == 200:
             messagebox.showinfo(title="Success", message="Successfully registered user!")
         else:

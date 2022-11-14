@@ -17,5 +17,11 @@ class FlaskApp:
             self.db.insertUser(data)
             return make_response("", 200)
 
+        @self.app.route("/update", methods=["POST", "GET"])
+        def updateData():
+            data = request.json
+            self.db.insertUser(data)
+            return make_response("", 200)
+
     def run(self):
         self.app.run()
