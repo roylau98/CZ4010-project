@@ -7,7 +7,7 @@ from datetime import datetime
 import uuid
 
 class notesCreateFrame(tk.Frame):
-    def __init__(self, parent, main, database, vaultKey, username):
+    def __init__(self, parent, main, database, vaultKey, username, hmacKey):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(11, weight=1)
@@ -16,6 +16,7 @@ class notesCreateFrame(tk.Frame):
         self.database = database
         self.vaultKey = vaultKey
         self.username = username
+        self.hmacKey = hmacKey
 
         self.noteLabelText = tk.StringVar()
         self.noteLabelText.set("Title:")
@@ -70,7 +71,8 @@ class notesCreateFrame(tk.Frame):
             return
 
         encryptedNote, iv = utilities.encrypt(self.vaultKey, bytes(notebody, "utf-8"))
-        hashed = utilities.hash(bytes(notebody, "utf-8"))
+        # hashed = utilities.hash(bytes(notebody, "utf-8"))
+        hashed = utilities.hashMAC(self.hmacKey, bytes(notebody, "utf-8"))
         json = {'title': noteTitle,
                 'filename': fileName,
                 'hash': hashed,

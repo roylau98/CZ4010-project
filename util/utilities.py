@@ -2,10 +2,11 @@ import secrets
 import string
 import os
 import json
-import scrypt
+# import scrypt
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
-from Crypto.Hash import keccak
+from Crypto.Hash import keccak, HMAC, SHA256
+from Crypto.Protocol.KDF import scrypt
 
 def passwordGenerator(pool, length):
     password = ""
@@ -31,12 +32,13 @@ def check(password, pool):
 
     return check
 
-def decryptNote(path, filename, vaultKey, iv):
+def decryptNote(path, filename, vaultKey, iv, hmacKey):
     with open(path + "/" + filename, 'rb') as f:
         encrypted = f.readlines()
 
     decrypted = decrypt(vaultKey, b"".join(encrypted), iv)
-    hashed = hash(decrypted)
+    # hashed = hash(decrypted)
+    hashed = hashMAC(hmacKey, decrypted)
     return decrypted.decode("utf-8"), hashed
 
 def saveNote(encryption, path, filename):
@@ -49,33 +51,38 @@ def deleteItem(path):
     except OSError as e:
         print("Note does not exists.")
 
-def encryptFile(key, path, savelocation):
+def encryptFile(key, path, savelocation, hmacKey):
     with open(path, 'rb') as f:
         plaintext = f.readlines()
 
     deleteItem(path)
     encrypted, iv = encrypt(key, b"".join(plaintext))
-    hashedFile = hash(b"".join(plaintext))
-
+    # hashedFile = hash(b"".join(plaintext))
+    hashedFile = hashMAC(hmacKey, b"".join(plaintext))
     with open(savelocation, 'wb') as f:
         f.write(encrypted)
     return iv, hashedFile
 
-def decryptFile(key, path, iv, hashFile):
+def decryptFile(key, path, iv, hashFile, hmacKey):
     with open(path, 'rb') as f:
         encrypted = f.readlines()
 
     decrypted = decrypt(key, b"".join(encrypted), iv)
-    hashed = hash(decrypted)
+    # hashed = hash(decrypted)
 
     with open(path, 'wb') as f:
         f.write(decrypted)
 
-    return hashed == hashFile
+    # return hashed == hashFile
+    return verifyhashMAC(hmacKey, decrypted, hashFile)
+
+# def KDF(string, salt):
+#     # key = scrypt.hash(string, salt, 524288, 8, 1, 32)
+#     key = scrypt.hash(string, salt, 128, 8, 1, 32)
+#     return key
 
 def KDF(string, salt):
-    # key = scrypt.hash(string, salt, 524288, 8, 1, 32)
-    key = scrypt.hash(string, salt, 128, 8, 1, 32)
+    key = scrypt(string, salt, 32, 524288, 8, 1)
     return key
 
 def encrypt(key, message):
@@ -93,3 +100,21 @@ def hash(message):
     keccakHash = keccak.new(digest_bits=256)
     keccakHash.update(message)
     return keccakHash.hexdigest()
+
+def hashMAC(macKey, message):
+    h = HMAC.new(macKey, digestmod=SHA256)
+    h.update(message)
+    return h.hexdigest()
+
+def verifyhashMAC(macKey, message, storedHash):
+    h = HMAC.new(macKey, digestmod=SHA256)
+    h.update(message)
+    try:
+        h.hexverify(storedHash)
+        return True
+    except Exception as e:
+        return False
+
+# def KDF(string, salt):
+#     key = scrypt.hash(string, salt, 524288, 8, 1, 32)
+#     return key

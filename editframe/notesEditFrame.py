@@ -6,7 +6,7 @@ from datetime import datetime
 import os
 
 class notesEditFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame, database, vaultKey):
+    def __init__(self, parent, main, json, itemFrame, database, vaultKey, hmacKey):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(11, weight=1)
@@ -16,6 +16,7 @@ class notesEditFrame(tk.Frame):
         self.itemFrame = itemFrame
         self.database = database
         self.vaultKey = vaultKey
+        self.hmacKey = hmacKey
         self.oldKey = self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename']
 
         self.noteLabelText = tk.StringVar()
@@ -45,9 +46,10 @@ class notesEditFrame(tk.Frame):
             return
 
         self.decrypted, self.hashed = utilities.decryptNote(self.json['path'], self.json['filename'], self.vaultKey,
-                                                            self.json["iv"])
+                                                            self.json["iv"], self.hmacKey)
 
-        if self.hashed != self.json['hash']:
+        # if self.hashed != self.json['hash']:
+        if not utilities.verifyhashMAC(self.hmacKey, self.decrypted.encode(), self.json["hash"]):
             messagebox.showwarning(title="Warning", message="Hash does not match. Possibly tampered.")
 
         self.noteBody.set(self.decrypted)
@@ -75,9 +77,9 @@ class notesEditFrame(tk.Frame):
 
         self.json['title'] = noteTitle
         message = self.noteBodyText.get("1.0", "end-1c").strip()
-        hashed = utilities.hash(bytes(notebody, "utf-8"))
-
-        if hashed != self.json['hash']:
+        # hashed = utilities.hash(bytes(notebody, "utf-8"))
+        hashed = utilities.hashMAC(self.hmacKey, message.encode())
+        if not utilities.verifyhashMAC(self.hmacKey, message.encode(), self.json["hash"]):
             changed = True
             encryptedNote, iv = utilities.encrypt(self.vaultKey, bytes(notebody, "utf-8"))
             utilities.saveNote(encryptedNote, self.json['path'], self.json['filename'])

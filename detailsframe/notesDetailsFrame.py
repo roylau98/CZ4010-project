@@ -5,7 +5,7 @@ from util import utilities
 import os
 
 class notesDetailsFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame, database, vaultKey):
+    def __init__(self, parent, main, json, itemFrame, database, vaultKey, hmacKey):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
@@ -15,6 +15,7 @@ class notesDetailsFrame(tk.Frame):
         self.itemFrame = itemFrame
         self.database = database
         self.vaultKey = vaultKey
+        self.hmacKey = hmacKey
 
         self.noteLabelText = tk.StringVar()
         self.noteLabelText.set("Title:")
@@ -50,9 +51,10 @@ class notesDetailsFrame(tk.Frame):
             self.deleteNote()
             return
 
-        self.decrypted, self.hashed = utilities.decryptNote(self.json['path'], self.json['filename'], self.vaultKey, self.json["iv"])
+        self.decrypted, self.hashed = utilities.decryptNote(self.json['path'], self.json['filename'], self.vaultKey, self.json["iv"], self.hmacKey)
 
-        if self.hashed != self.json['hash']:
+        # if self.hashed != self.json['hash']:
+        if not utilities.verifyhashMAC(self.hmacKey, self.decrypted.encode(), self.json["hash"]):
             messagebox.showwarning(title="Warning", message="Hash does not match. Possibly tampered.")
 
         self.noteBody.set(self.decrypted)

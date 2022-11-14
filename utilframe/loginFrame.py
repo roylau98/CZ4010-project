@@ -103,6 +103,7 @@ class loginFrame(tk.Frame):
 
         # (decryption Key | uuid) as plaintext, (salt | email) as salt
         authKey = utilities.KDF(decryptionKey + salt, salt + email.encode())
+
         # auth = self.firebase.authenticate(authKey.hex())
         url = "http://localhost:5000/"
         response = requests.get(url + authKey.hex())
@@ -120,8 +121,10 @@ class loginFrame(tk.Frame):
             messagebox.showwarning(title="Error", message="Database possibly tampered.")
 
         vaultKey = utilities.KDF(decryptionKey + password.encode() + salt, authKey + password.encode())
+        # hmac key (authKey | password) plaintext, (UUID | vault key) as salt
+        hmacKey = utilities.KDF(authKey + password.encode(), salt + vaultKey)
         self.destroy()
-        MainApplication(self.parent, self, data["lastLogin"], vaultKey, username, data["auth"]).grid(sticky='nsew')
+        MainApplication(self.parent, self, data["lastLogin"], vaultKey, username, data["auth"], hmacKey).grid(sticky='nsew')
         return username
 
     def registerUser(self):

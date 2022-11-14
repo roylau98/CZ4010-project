@@ -3,7 +3,7 @@ from util import utilities
 from tkinter import messagebox
 
 class vaultDetailsFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame, database, vaultKey):
+    def __init__(self, parent, main, json, itemFrame, database, vaultKey, hmacKey):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
@@ -13,6 +13,7 @@ class vaultDetailsFrame(tk.Frame):
         self.itemFrame = itemFrame
         self.database = database
         self.vaultKey = vaultKey
+        self.hmacKey = hmacKey
 
         self.vaultLabelText = tk.StringVar()
         self.vaultLabelText.set("Title:")
@@ -59,7 +60,7 @@ class vaultDetailsFrame(tk.Frame):
 
     def decryptVault(self):
         self.database.deleteRecord("vault", self.json["key"])
-        correctHash = utilities.decryptFile(self.vaultKey, self.json["path"] + "/" + self.json["filename"], self.json["iv"], self.json['hash'])
+        correctHash = utilities.decryptFile(self.vaultKey, self.json["path"] + "/" + self.json["filename"], self.json["iv"], self.json['hash'], self.hmacKey)
         if not correctHash:
             messagebox.showwarning(title="Warning", message="File possibly tampered. Hash does not match.")
 

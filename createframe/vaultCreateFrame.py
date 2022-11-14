@@ -6,7 +6,7 @@ import uuid
 from tkinter import messagebox
 from datetime import datetime
 class vaultCreateFrame(tk.Frame):
-    def __init__(self, parent, main, database, vaultKey, username):
+    def __init__(self, parent, main, database, vaultKey, username, hmacKey):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
@@ -15,6 +15,7 @@ class vaultCreateFrame(tk.Frame):
         self.database = database
         self.vaultKey = vaultKey
         self.username = username
+        self.hmacKey = hmacKey
 
         self.vaultLabelText = tk.StringVar()
         self.vaultLabelText.set("Title:")
@@ -64,8 +65,7 @@ class vaultCreateFrame(tk.Frame):
             messagebox.showwarning(title="Missing information", message="Title/ Filename is missing")
             return
 
-        iv, hash = utilities.encryptFile(self.vaultKey, "/".join(path), f"./{self.username}/vault/" + path[1])
-        print(iv)
+        iv, hash = utilities.encryptFile(self.vaultKey, "/".join(path), f"./{self.username}/vault/" + path[1], self.hmacKey)
         json = {
             "title": vaultTitle,
             "filename": path[1],

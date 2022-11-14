@@ -2,7 +2,11 @@ import pyrebase
 from datetime import datetime
 
 config = {
-  --
+    "apiKey": "AIzaSyC5V-T1vTjNe2LxetrCbEefB3m5tTVsXDo",
+    "authDomain": "cz4010-3578d.firebaseapp.com",
+    "databaseURL": "https://cz4010-3578d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "projectId": "cz4010-3578d",
+    "storageBucket": "cz4010-3578d.appspot.com",
 }
 
 class Firebase:
