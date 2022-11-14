@@ -1,3 +1,4 @@
+import base64
 import threading
 import tkinter as tk
 import time
@@ -64,7 +65,7 @@ class passwordEditFrame(tk.Frame):
         if self.json["password"] != self.passwordEntry.get().strip():
             changed = True
             encrypted, iv = utilities.encrypt(self.vaultKey, bytes(password, "utf-8"))
-            self.json["iv"] = iv.hex()
+            self.json["iv"] = base64.encodebytes(iv)
             self.json['password'] = encrypted.hex()
 
         currentDate = datetime.now()
@@ -73,7 +74,7 @@ class passwordEditFrame(tk.Frame):
 
         if changed:
             self.json["password"] = password
-            self.json["iv"] = bytes.fromhex(self.json["iv"])
+            self.json["iv"] = base64.b64decode(self.json["iv"])
         self.main.reRenderDetailsFrame(self.json, "login")
         self.itemFrame.updateItems(self.oldKey, self.json['account'] + "\n" + self.json['username'])
 

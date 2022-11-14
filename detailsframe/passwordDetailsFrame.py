@@ -96,7 +96,10 @@ class passwordDetailsFrame(tk.Frame):
         background.start()
 
     def hidePassword(self):
-        time.sleep(10)
-        self.passwordEntryText.set(self.json['password'][:6])
-        self.passwordEntry.config(text=self.passwordEntryText)
-        self.passwordEntry.config(show="*")
+        try:
+            time.sleep(10)
+            self.passwordEntryText.set(self.json['password'][:6])
+            self.passwordEntry.config(text=self.passwordEntryText)
+            self.passwordEntry.config(show="*")
+        except Exception as e:
+            pass

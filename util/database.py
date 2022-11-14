@@ -1,6 +1,6 @@
 import sqlite3
 from util import utilities
-
+import base64
 
 class DataBase:
     def __init__(self, database):
@@ -52,9 +52,11 @@ class DataBase:
         for i in data:
             dict[i[5]] = {"account": i[0],
                           "username": i[1],
-                          "password": utilities.decrypt(vaultKey, bytes.fromhex(i[2]), bytes.fromhex(i[4])),
+                          # "password": utilities.decrypt(vaultKey, bytes.fromhex(i[2]), bytes.fromhex(i[4])),
+                          "password": utilities.decrypt(vaultKey, base64.b64decode(i[2]), base64.b64decode(i[4])),
                           "updated": i[3],
-                          "iv": bytes.fromhex(i[4]),
+                          # "iv": bytes.fromhex(i[4]),
+                          "iv": base64.b64decode(i[4]),
                           "key": i[5]}
         return dict
 
@@ -68,7 +70,8 @@ class DataBase:
                           "filename": i[1],
                           "hash": i[2],
                           "path": i[3],
-                          "iv": bytes.fromhex(i[4]),
+                          # "iv": bytes.fromhex(i[4]),
+                          "iv": base64.b64decode(i[4]),
                           "updated": i[5],
                           "key": i[6]}
         return dict
@@ -83,7 +86,8 @@ class DataBase:
                           "filename": i[1],
                           "hash": i[2],
                           "path": i[3],
-                          "iv": bytes.fromhex(i[4]),
+                          # "iv": bytes.fromhex(i[4]),
+                          "iv": base64.b64decode(i[4]),
                           "updated": i[5],
                           "key": i[6]}
         return dict

@@ -1,3 +1,4 @@
+import base64
 import tkinter as tk
 from tkinter import scrolledtext
 from util import utilities
@@ -80,7 +81,7 @@ class notesEditFrame(tk.Frame):
             changed = True
             encryptedNote, iv = utilities.encrypt(self.vaultKey, bytes(notebody, "utf-8"))
             utilities.saveNote(encryptedNote, self.json['path'], self.json['filename'])
-            self.json["iv"] = iv.hex()
+            self.json["iv"] = base64.encodebytes(iv)
             self.json["hash"] = hashed
 
         currentDate = datetime.now()
@@ -88,6 +89,6 @@ class notesEditFrame(tk.Frame):
         self.database.updateRecord("notes", self.json)
 
         if changed:
-            self.json["iv"] = bytes.fromhex(self.json["iv"])
+            self.json["iv"] = base64.b64decode(self.json["iv"])
         self.main.reRenderDetailsFrame(self.json, "notes")
         self.itemFrame.updateItems(self.oldKey, self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])

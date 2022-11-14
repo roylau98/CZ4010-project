@@ -1,3 +1,4 @@
+import base64
 import tkinter as tk
 from util import utilities
 from datetime import datetime
@@ -51,9 +52,11 @@ class passwordCreateFrame(tk.Frame):
         encrypted, iv = utilities.encrypt(self.vaultKey, bytes(password, "utf-8"))
         json = {'account': account,
                 'username': username,
-                'password': encrypted.hex(),
+                # 'password': encrypted.hex(),
+                "password": base64.encodebytes(encrypted),
                 'updated': datetime.now().strftime('%d %b %Y, %I:%M %p'),
-                "iv": iv.hex(),
+                #"iv": iv.hex(),
+                "iv": base64.encodebytes(iv),
                 'key': uuid.uuid4().hex
                 }
         # save encrypted password

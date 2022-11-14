@@ -1,3 +1,4 @@
+import base64
 import tkinter as tk
 from util import utilities
 import os
@@ -64,16 +65,21 @@ class vaultCreateFrame(tk.Frame):
             return
 
         iv, hash = utilities.encryptFile(self.vaultKey, "/".join(path), f"./{self.username}/vault/" + path[1])
+        print(iv)
         json = {
             "title": vaultTitle,
             "filename": path[1],
             "hash": hash,
             "path": f"./{self.username}/vault",
             "updated": datetime.now().strftime('%d %b %Y, %I:%M %p'),
-            "iv": iv.hex(),
+            # "iv": iv.hex(),
+            "iv": base64.encodebytes(iv),
             "key": uuid.uuid4().hex
         }
 
         self.database.insertRecord("vault", json)
+        # store iv as bytes
+        json["iv"] = base64.b64decode(json["iv"])
+        print(json["iv"])
         self.main.reRenderDetailsFrame(json, "vault")
         self.main.changeItemsFrame("vault", False)

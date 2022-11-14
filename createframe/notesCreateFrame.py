@@ -1,3 +1,4 @@
+import base64
 import tkinter as tk
 from tkinter import scrolledtext
 from tkinter import messagebox
@@ -75,11 +76,13 @@ class notesCreateFrame(tk.Frame):
                 'hash': hashed,
                 'path': f"./{self.username}/notes",
                 'updated': datetime.now().strftime('%d %b %Y, %I:%M %p'),
-                'iv': iv.hex(),
+                # 'iv': iv.hex(),
+                "iv": base64.encodebytes(iv),
                 'key': uuid.uuid4().hex
                 }
         utilities.saveNote(encryptedNote, json['path'], json['filename'])
         self.database.insertRecord("notes", json)
-        json["iv"] = bytes.fromhex(json["iv"])
+        # json["iv"] = bytes.fromhex(json["iv"])
+        json["iv"] = base64.b64decode(json["iv"])
         self.main.reRenderDetailsFrame(json, "notes")
         self.main.changeItemsFrame("notes", False)
