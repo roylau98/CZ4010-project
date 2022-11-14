@@ -122,7 +122,7 @@ class loginFrame(tk.Frame):
 
         vaultKey = utilities.KDF(decryptionKey + password.encode() + salt, authKey + password.encode())
         # hmac key (authKey | password) plaintext, (UUID | vault key) as salt
-        hmacKey = utilities.KDF(authKey + password.encode(), salt + vaultKey)
+        hmacKey = utilities.KDF(username.encode() + authKey + password.encode(), salt + vaultKey)
         self.destroy()
         MainApplication(self.parent, self, data["lastLogin"], vaultKey, username, data["auth"], hmacKey).grid(sticky='nsew')
         return username
