@@ -1,11 +1,12 @@
+import base64
 import threading
 import tkinter as tk
 import time
-import utilities
 from datetime import datetime
+from util import utilities
 
 class passwordEditFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame):
+    def __init__(self, parent, main, json, itemFrame, database, vaultKey):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.json = json
         self.parent = parent
@@ -13,6 +14,8 @@ class passwordEditFrame(tk.Frame):
         self.columnconfigure(3, weight=1)
         self.main = main
         self.itemFrame = itemFrame
+        self.database = database
+        self.vaultKey = vaultKey
         self.oldKey = self.json['account'] + "\n" + self.json['username']
 
         self.accountLabelText = tk.StringVar()
@@ -49,12 +52,29 @@ class passwordEditFrame(tk.Frame):
         self.saveButton.grid(row=6, column=0, sticky='w', padx=10, pady=5)
 
     def saveLogin(self):
-        self.json['account'] = self.accountEntry.get().strip()
-        self.json['username'] = self.usernameEntry.get().strip()
-        self.json['password'] = self.passwordEntry.get().strip()
+        changed = False
+        account = self.accountEntry.get()
+        username = self.usernameEntry.get()
+        password = self.passwordEntry.get()
+
+        if (account == "" or username == "" or password == ""):
+            messagebox.showwarning(title="Missing information", message="Account/ Username/ Password is missing")
+            return
+
+        # if password changed, re-encrypt password
+        if self.json["password"] != self.passwordEntry.get().strip():
+            changed = True
+            encrypted, iv = utilities.encrypt(self.vaultKey, bytes(password, "utf-8"))
+            self.json["iv"] = base64.encodebytes(iv)
+            self.json['password'] = encrypted.hex()
+
         currentDate = datetime.now()
         self.json['updated'] = currentDate.strftime('%d %b %Y, %I:%M %p')
-        utilities.updateJson(self.json['key'], self.json, "login")
+        self.database.updateRecord("login", self.json)
+
+        if changed:
+            self.json["password"] = password
+            self.json["iv"] = base64.b64decode(self.json["iv"])
         self.main.reRenderDetailsFrame(self.json, "login")
         self.itemFrame.updateItems(self.oldKey, self.json['account'] + "\n" + self.json['username'])
 

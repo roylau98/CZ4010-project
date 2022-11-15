@@ -1,9 +1,11 @@
 import tkinter as tk
 from tkinter import scrolledtext
-import utilities
+from tkinter import messagebox
+from util import utilities
+import os
 
 class notesDetailsFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame):
+    def __init__(self, parent, main, json, itemFrame, database, vaultKey, hmacKey):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
@@ -11,6 +13,9 @@ class notesDetailsFrame(tk.Frame):
         self.json = json
         self.main = main
         self.itemFrame = itemFrame
+        self.database = database
+        self.vaultKey = vaultKey
+        self.hmacKey = hmacKey
 
         self.noteLabelText = tk.StringVar()
         self.noteLabelText.set("Title:")
@@ -20,13 +25,13 @@ class notesDetailsFrame(tk.Frame):
         self.noteTitleText = tk.Text(self, width=60, height=1)
         self.noteTitleText.insert(tk.END, self.noteTitle.get())
 
-        self.encryptionLabelText = tk.StringVar()
-        self.encryptionLabelText.set("Encryption:")
-        self.encryptionLabel = tk.Label(self, textvariable=self.encryptionLabelText)
-        self.noteEncryption = tk.StringVar()
-        self.noteEncryption.set(self.json['encryption'])
-        self.noteEncryptionText = tk.Text(self, width=60, height=1)
-        self.noteEncryptionText.insert("end", self.noteEncryption.get())
+        self.hashLabelText = tk.StringVar()
+        self.hashLabelText.set("Hash:")
+        self.hashLabel = tk.Label(self, textvariable=self.hashLabelText)
+        self.noteHash = tk.StringVar()
+        self.noteHash.set(self.json['hash'])
+        self.noteHashText = tk.Text(self, width=60, height=2)
+        self.noteHashText.insert("end", self.noteHash.get())
 
         self.locationLabelText = tk.StringVar()
         self.locationLabelText.set("Location:")
@@ -40,7 +45,18 @@ class notesDetailsFrame(tk.Frame):
         self.bodyLabelText.set("Body:")
         self.bodyLabel = tk.Label(self, textvariable=self.bodyLabelText)
         self.noteBody = tk.StringVar()
-        self.decrypted = utilities.decryptNote(self.json['encryption'], self.json['path'], self.json['filename'])
+
+        if not os.path.isfile(self.json['path']+"/"+self.json['filename']):
+            messagebox.showwarning(title="Error", message="File does not exists.")
+            self.deleteNote()
+            return
+
+        self.decrypted, self.hashed = utilities.decryptNote(self.json['path'], self.json['filename'], self.vaultKey, self.json["iv"], self.hmacKey)
+
+        # if self.hashed != self.json['hash']:
+        if not utilities.verifyhashMAC(self.hmacKey, self.decrypted.encode(), self.json["hash"]):
+            messagebox.showwarning(title="Warning", message="Hash does not match. Possibly tampered.")
+
         self.noteBody.set(self.decrypted)
         self.noteBodyText = scrolledtext.ScrolledText(self, width=60, height=18)
         self.noteBodyText.insert("end", self.noteBody.get())
@@ -54,8 +70,8 @@ class notesDetailsFrame(tk.Frame):
 
         self.noteLabel.grid(row=0, column=0, sticky='w', padx=10)
         self.noteTitleText.grid(row=1, column=0, sticky='w', padx=10)
-        self.encryptionLabel.grid(row=2, column=0, sticky='w', padx=10)
-        self.noteEncryptionText.grid(row=3, column=0, sticky='w', padx=10)
+        self.hashLabel.grid(row=2, column=0, sticky='w', padx=10)
+        self.noteHashText.grid(row=3, column=0, sticky='w', padx=10)
         self.locationLabel.grid(row=4, column=0, sticky='w', padx=10)
         self.noteLocationText.grid(row=5, column=0, sticky='w', padx=10)
         self.bodyLabel.grid(row=6, column=0, sticky='w', padx=10)
@@ -68,8 +84,7 @@ class notesDetailsFrame(tk.Frame):
         self.main.renderEditFrame("notes", self.json['key'])
 
     def deleteNote(self):
-        utilities.deleteItem(self.json['path'], self.json['filename'])
+        self.database.deleteRecord("notes", self.json["key"])
         self.main.displayDefaultFrame()
         self.itemFrame.deleteButton(self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])
-        utilities.deleteFromJson(self.json['key'], "notes")
         self.main.updateItems(self.json['key'], "notes")

@@ -1,12 +1,10 @@
 import threading
 import tkinter as tk
-import string
 import time
-import utilities
-from datetime import datetime
+
 
 class passwordDetailsFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame):
+    def __init__(self, parent, main, json, itemFrame, database, vaultKey):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.json = json
         self.parent = parent
@@ -14,6 +12,8 @@ class passwordDetailsFrame(tk.Frame):
         self.columnconfigure(3, weight=1)
         self.main = main
         self.itemFrame = itemFrame
+        self.database = database
+        self.vaultKey = vaultKey
 
         self.accountLabelText = tk.StringVar()
         self.accountLabelText.set("Account:")
@@ -34,7 +34,8 @@ class passwordDetailsFrame(tk.Frame):
         self.passwordLabelText.set("Password:")
         self.passwordLabel = tk.Label(self, textvariable=self.passwordLabelText)
         self.passwordEntryText = tk.StringVar()
-        self.passwordEntryText.set(self.json['password'][:6])
+
+        self.passwordEntryText.set(self.json["password"][:6])
         self.passwordEntry = tk.Entry(self, text=self.passwordEntryText, width=60, show="*")
         self.passwordCopyButton = tk.Button(self, text="Copy", command=self.copyToClipboard)
         self.passwordViewButton = tk.Button(self, text="View", command=self.unhidePassword)
@@ -66,7 +67,8 @@ class passwordDetailsFrame(tk.Frame):
     def deleteLogin(self):
         self.main.displayDefaultFrame()
         self.itemFrame.deleteButton(self.json['account'] + "\n" + self.json['username'])
-        utilities.deleteFromJson(self.json['key'], "login")
+        self.database.deleteRecord("login", self.json["key"])
+        # utilities.deleteFromJson(self.json['key'], "login")
         self.main.updateItems(self.json['key'], "login")
 
     def copyUsernameToClipboard(self):
@@ -94,7 +96,10 @@ class passwordDetailsFrame(tk.Frame):
         background.start()
 
     def hidePassword(self):
-        time.sleep(10)
-        self.passwordEntryText.set(self.json['password'][:6])
-        self.passwordEntry.config(text=self.passwordEntryText)
-        self.passwordEntry.config(show="*")
+        try:
+            time.sleep(10)
+            self.passwordEntryText.set(self.json['password'][:6])
+            self.passwordEntry.config(text=self.passwordEntryText)
+            self.passwordEntry.config(show="*")
+        except Exception as e:
+            pass

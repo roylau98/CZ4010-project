@@ -2,7 +2,8 @@ import threading
 import tkinter as tk
 import string
 import time
-import utilities
+from util import utilities
+
 
 class passwordGeneratorFrame(tk.Frame):
     def __init__(self, parent):
@@ -111,14 +112,18 @@ class passwordGeneratorFrame(tk.Frame):
 
     def clearClipboard(self):
         time.sleep(10)
-        print("Cleared clipboard")
         self.parent.clipboard_clear()
         self.parent.clipboard_append('')
 
     def clearOutputBackground(self):
         time.sleep(10)
-        print("Cleared output")
-        self.output.delete(1.0, "end")
+        try:
+            self.output.delete(1.0, "end")
+        except Exception as e:
+            pass
 
     def clearOutput(self):
-        self.output.delete(1.0, "end")
+        try:
+            self.output.delete(1.0, "end")
+        except Exception as e:
+            pass

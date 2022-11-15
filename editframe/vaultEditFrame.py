@@ -1,11 +1,8 @@
-import threading
 import tkinter as tk
-import time
-import utilities
 from datetime import datetime
 
 class vaultEditFrame(tk.Frame):
-    def __init__(self, parent, main, json, itemFrame):
+    def __init__(self, parent, main, json, itemFrame, database):
         tk.Frame.__init__(self, highlightbackground='black', highlightthickness=1)
         self.parent = parent
         self.rowconfigure(10, weight=1)
@@ -13,6 +10,7 @@ class vaultEditFrame(tk.Frame):
         self.json = json
         self.main = main
         self.itemFrame = itemFrame
+        self.database = database
         self.oldKey = self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename']
 
         self.vaultLabelText = tk.StringVar()
@@ -44,7 +42,8 @@ class vaultEditFrame(tk.Frame):
         self.json['encryption'] = self.vaultEncryptionText.get("1.0", "end-1c").strip()
         currentDate = datetime.now()
         self.json['updated'] = currentDate.strftime('%d %b %Y, %I:%M %p')
-        utilities.updateJson(self.json['key'], self.json, "vault")
+        self.database.updateRecord("vault", self.json)
+        # utilities.updateJson(self.json['key'], self.json, "vault")
         self.main.reRenderDetailsFrame(self.json, "vault")
         self.itemFrame.updateItems(self.oldKey,
                                    self.json['title'] + '\n' + self.json['path'] + "/" + self.json['filename'])
