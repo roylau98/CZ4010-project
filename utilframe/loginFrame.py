@@ -116,13 +116,15 @@ class loginFrame(tk.Frame):
             binary = f.readlines()
             binary = b"".join(binary)
 
-        filehash = utilities.hash(binary)
-        if filehash != data["hash"]:
-            messagebox.showwarning(title="Error", message="Database possibly tampered.")
-
         vaultKey = utilities.KDF(decryptionKey + password.encode() + salt, authKey + password.encode())
         # hmac key (authKey | password) plaintext, (UUID | vault key) as salt
         hmacKey = utilities.KDF(username.encode() + authKey + password.encode(), salt + vaultKey)
+
+        # filehash = utilities.hash(binary)
+        filehash = utilities.hashMAC(hmacKey, binary)
+        if not utilities.verifyhashMAC(hmacKey, binary, data["hash"]):
+            messagebox.showwarning(title="Error", message="Database possibly tampered.")
+
         self.destroy()
         MainApplication(self.parent, self, data["lastLogin"], vaultKey, username, data["auth"], hmacKey).grid(sticky='nsew')
         return username

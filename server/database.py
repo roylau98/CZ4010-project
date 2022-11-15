@@ -38,3 +38,9 @@ class DataBase:
         data = (json["auth"], json["lastLogin"], json["filehash"],)
         self.cursor.execute(command, data)
         self.connection.commit()
+
+    def updateValues(self, json):
+        command = "UPDATE users set login = (?), filehash = (?) WHERE auth = (?)"
+        data = (json["lastLogin"], json["filehash"], json["auth"],)
+        self.cursor.execute(command, data)
+        self.connection.commit()

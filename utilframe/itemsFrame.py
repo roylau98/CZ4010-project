@@ -28,6 +28,7 @@ class itemsFrame(tk.Frame):
         self.main.changeDetailsFrame(key)
 
     def deleteButton(self, key):
+        i = 0
         for i in range(len(self.button)):
             if self.button[i]['text'] == key:
                 break

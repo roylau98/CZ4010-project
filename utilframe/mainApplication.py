@@ -16,23 +16,23 @@ import tkinter as tk
 from util import utilities
 from datetime import datetime
 import requests
+import json as js
 
 global user
 global authKey
+global hKey
 global root
 def onClose():
-    # TODO: RSA
-    url = "http://localhost:5000/update/"
+    url = "http://localhost:5000/update"
     with open(f"./{user}/{user}.db", "rb") as f:
         binary = f.readlines()
         binary = b"".join(binary)
 
-    filehash = utilities.hash(binary)
-
+    filehash = utilities.hashMAC(hKey, binary)
     params = {
         "auth": authKey,
         "lastLogin": datetime.now().strftime('%d %b %Y, %I:%M %p'),
-        "filehash": utilities.hash(binary)
+        "filehash": filehash
     }
     response = requests.post(url, json=params, headers={'content-type': 'application/json'})
     root.destroy()
@@ -52,6 +52,8 @@ class MainApplication(tk.Frame):
         root = parent
         global authKey
         authKey = auth
+        global hKey
+        hKey = hmacKey
 
         self.database = DataBase(f"./{self.username}/{self.username}.db")
         self.credentials = self.database.fetchAllLogin(vaultKey)
@@ -166,6 +168,7 @@ class MainApplication(tk.Frame):
         self.itemsFrame.destroy()
         self.servicesFrame.destroy()
         self.passwordGenerator.destroy()
+        onClose()
         self.login.loginPage()
 
 
